@@ -12,21 +12,24 @@ public class DisplayManager {
     public static void createDisplay()
     {
 
-        ContextAttribs attribs = new ContextAttribs(3,2);
+        ContextAttribs attribs = new ContextAttribs(3, 2);
         ContextAttribs forwardCompatible = attribs.withForwardCompatible(true);
         ContextAttribs profileCore = attribs.withProfileCore(true);
 
         try
         {
+
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
             Display.create(new PixelFormat(), attribs);
             Display.setTitle("OpenGL PROJECT");
+
         } catch (LWJGLException e)
         {
             e.printStackTrace();
         }
 
         GL11.glViewport(0, 0, WIDTH, HEIGHT);
+
     }
 
     public static void updateDisplay()
