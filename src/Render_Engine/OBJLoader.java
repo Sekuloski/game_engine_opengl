@@ -38,7 +38,7 @@ public class OBJLoader
         List<Integer> indices = new ArrayList<>();
 
         float[] verticesArray;
-        float[] normalsArray;
+        float[] normalsArray = new float[0];
         float[] textureArray = null;
         int[] indicesArray;
 
@@ -120,7 +120,7 @@ public class OBJLoader
             indicesArray[i] = indices.get(i);
         }
 
-        return loader.loadToVAO(verticesArray, textureArray, indicesArray);
+        return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
 
     }
 
