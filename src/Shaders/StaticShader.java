@@ -18,6 +18,7 @@ public class StaticShader extends ShaderProgram
     private int lightColor_location;
     private int shine_location;
     private int refl_location;
+    private int fakeLighting_location;
 
     public StaticShader()
     {
@@ -42,7 +43,14 @@ public class StaticShader extends ShaderProgram
         lightPosition_location = super.getUniformLocation("lightPosition");
         shine_location = super.getUniformLocation("shineDamper");
         refl_location = super.getUniformLocation("reflectivity");
+        fakeLighting_location = super.getUniformLocation("useFakeLighting");
     }
+
+    public void loadFakeLighting(boolean useFake)
+    {
+        super.loadBoolean(fakeLighting_location, useFake);
+    }
+
 
     public void loadShine(float damper, float reflectivity)
     {
