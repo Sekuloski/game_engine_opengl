@@ -4,6 +4,7 @@ import Entities.Camera;
 import Entities.Light;
 import ToolBox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class StaticShader extends ShaderProgram
 {
@@ -19,6 +20,7 @@ public class StaticShader extends ShaderProgram
     private int shine_location;
     private int refl_location;
     private int fakeLighting_location;
+    private int skyColor_location;
 
     public StaticShader()
     {
@@ -44,6 +46,13 @@ public class StaticShader extends ShaderProgram
         shine_location = super.getUniformLocation("shineDamper");
         refl_location = super.getUniformLocation("reflectivity");
         fakeLighting_location = super.getUniformLocation("useFakeLighting");
+        skyColor_location = super.getUniformLocation("skyColor");
+
+    }
+
+    public void loadSkyColor(float r, float g, float b)
+    {
+        super.loadVector(skyColor_location, new Vector3f(r, g, b));
     }
 
     public void loadFakeLighting(boolean useFake)

@@ -4,6 +4,7 @@ import Entities.Camera;
 import Entities.Light;
 import ToolBox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class TerrainShader extends ShaderProgram
 {
@@ -18,6 +19,13 @@ public class TerrainShader extends ShaderProgram
     private int lightColor_location;
     private int shine_location;
     private int refl_location;
+    private int skyColor_location;
+    private int background_location;
+    private int r_location;
+    private int g_location;
+    private int b_location;
+    private int blendMap_location;
+
 
     public TerrainShader()
     {
@@ -42,6 +50,27 @@ public class TerrainShader extends ShaderProgram
         lightPosition_location = super.getUniformLocation("lightPosition");
         shine_location = super.getUniformLocation("shineDamper");
         refl_location = super.getUniformLocation("reflectivity");
+        skyColor_location = super.getUniformLocation("skyColor");
+        background_location = super.getUniformLocation("backgroundTexture");
+        r_location = super.getUniformLocation("rTexture");
+        g_location = super.getUniformLocation("gTexture");
+        b_location = super.getUniformLocation("bTexture");
+        blendMap_location = super.getUniformLocation("blendMap");
+    }
+
+    public void connectTextureUnits()
+    {
+        super.loadInt(background_location, 0);
+        super.loadInt(r_location, 1);
+        super.loadInt(g_location, 2);
+        super.loadInt(b_location, 3);
+        super.loadInt(blendMap_location, 4);
+
+    }
+
+    public void loadSkyColor(float r, float g, float b)
+    {
+        super.loadVector(skyColor_location, new Vector3f(r, g, b));
     }
 
     public void loadShine(float damper, float reflectivity)
