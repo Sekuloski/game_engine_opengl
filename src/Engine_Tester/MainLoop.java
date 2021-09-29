@@ -3,6 +3,7 @@ package Engine_Tester;
 import Entities.Camera;
 import Entities.Entity;
 import Entities.Light;
+import Entities.Player;
 import Models.RawModel;
 import Models.TexturedModel;
 import Render_Engine.*;
@@ -39,6 +40,10 @@ public class MainLoop
         RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
         TexturedModel grass = new TexturedModel(grassModel, new ModelTexture(loader.loadTexture("grassTexture")));
 
+        ModelData dragonData = OBJLoader.loadOBJ("dragon");
+        RawModel dragonModel = loader.loadToVAO(dragonData.getVertices(), dragonData.getTextureCoords(), dragonData.getNormals(), dragonData.getIndices());
+        TexturedModel dragon = new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("stallTexture")));
+
         Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1, 1));
 
         TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grass"));
@@ -58,6 +63,7 @@ public class MainLoop
         List<Entity> entities = new ArrayList<>();
         Random random = new Random();
 
+
         for(int i = 0; i < 500; i++)
         {
             entities.add(new Entity(tree, new Vector3f(random.nextFloat() * 800 - 400, 0, random.nextFloat() * -600), 0, 0, 0, 3));
@@ -65,19 +71,22 @@ public class MainLoop
             entities.add(new Entity(fern, new Vector3f(random.nextFloat() * 800 - 400, 0, random.nextFloat() * -600), 0, 0, 0, 0.6f));
         }
 
-        Terrain terrain = new Terrain(0, 0, loader, texturePack, blendMap);
-        Terrain terrain2 = new Terrain(1, 0, loader, texturePack, blendMap);
+        Terrain terrain = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap");
+        Terrain terrain2 = new Terrain(1, 0, loader, texturePack, blendMap, "heightmap");
 
-        Camera camera = new Camera();
 
         MasterRenderer renderer = new MasterRenderer();
+
+        Player player = new Player(dragon, new Vector3f(100, 0,-50), 0, 0, 0, 1);
+
+        Camera camera = new Camera(player);
 
         while (!Display.isCloseRequested())
         {
             // Test render
-
             camera.move();
-
+            player.move();
+            renderer.processEntity(player);
             renderer.processTerrain(terrain);
             renderer.processTerrain(terrain2);
             for(Entity entity1 : entities)
