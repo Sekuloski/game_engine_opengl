@@ -36,13 +36,9 @@ public class MainLoop
         RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
         TexturedModel fern = new TexturedModel(fernModel, new ModelTexture(loader.loadTexture("fern")));
 
-        ModelData grassData = OBJLoader.loadOBJ("grassModel");
-        RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
-        TexturedModel grass = new TexturedModel(grassModel, new ModelTexture(loader.loadTexture("grassTexture")));
-
-        ModelData dragonData = OBJLoader.loadOBJ("dragon");
-        RawModel dragonModel = loader.loadToVAO(dragonData.getVertices(), dragonData.getTextureCoords(), dragonData.getNormals(), dragonData.getIndices());
-        TexturedModel dragon = new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("stallTexture")));
+        ModelData playerData = OBJLoader.loadOBJ("player");
+        RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
+        TexturedModel person = new TexturedModel(playerModel, new ModelTexture(loader.loadTexture("player")));
 
         Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1, 1));
 
@@ -57,27 +53,35 @@ public class MainLoop
         tree.getTexture().setHasTransparency(true);
         fern.getTexture().setHasTransparency(true);
         fern.getTexture().setUseFakeLighting(true);
-        grass.getTexture().setHasTransparency(true);
-        grass.getTexture().setUseFakeLighting(true);
 
         List<Entity> entities = new ArrayList<>();
         Random random = new Random();
+        List<Terrain> terrains = new ArrayList<>();
+
+        for(int i = 0; i < 4; i++)
+        {
+            for(int j = 0; j < 4; j++)
+            {
+                Terrain terrain = new Terrain(i, j, loader, texturePack, blendMap, "heightmap");
+                terrains.add(terrain);
+            }
+        }
 
 
         for(int i = 0; i < 500; i++)
         {
-            entities.add(new Entity(tree, new Vector3f(random.nextFloat() * 800 - 400, 0, random.nextFloat() * -600), 0, 0, 0, 3));
-            entities.add(new Entity(grass, new Vector3f(random.nextFloat() * 800 - 400, 0, random.nextFloat() * -600), 0, 0, 0, 1));
-            entities.add(new Entity(fern, new Vector3f(random.nextFloat() * 800 - 400, 0, random.nextFloat() * -600), 0, 0, 0, 0.6f));
+            float x = random.nextFloat() * 800;
+            float z = random.nextFloat() * 800;
+            entities.add(new Entity(tree, new Vector3f(x, terrains.get((int) (Math.abs(x - z)/800)).getHeightOfTerrain(x, z), z), 0, 0, 0, 3));
+            x = random.nextFloat() * 800;
+            z = random.nextFloat() * 800;
+            entities.add(new Entity(fern, new Vector3f(x, terrains.get((int) (Math.abs(x - z)/800)).getHeightOfTerrain(x, z), z), 0, 0, 0, 0.6f));
         }
-
-        Terrain terrain = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap");
-        Terrain terrain2 = new Terrain(1, 0, loader, texturePack, blendMap, "heightmap");
 
 
         MasterRenderer renderer = new MasterRenderer();
 
-        Player player = new Player(dragon, new Vector3f(100, 0,-50), 0, 0, 0, 1);
+        Player player = new Player(person, new Vector3f(0, 0,0), 0, 0, 0, 1);
 
         Camera camera = new Camera(player);
 
@@ -85,10 +89,14 @@ public class MainLoop
         {
             // Test render
             camera.move();
-            player.move();
+            player.move(terrains.get((int) (Math.abs(player.getPosition().x - player.getPosition().z)/800)));
+            System.out.println((Math.abs(player.getPosition().x - player.getPosition().z)/800));
             renderer.processEntity(player);
-            renderer.processTerrain(terrain);
-            renderer.processTerrain(terrain2);
+            for(Terrain terrain : terrains)
+            {
+                renderer.processTerrain(terrain);
+            }
+
             for(Entity entity1 : entities)
             {
                 renderer.processEntity(entity1);

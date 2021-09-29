@@ -2,6 +2,7 @@ package Entities;
 
 import Models.TexturedModel;
 import Render_Engine.DisplayManager;
+import Terrains.Terrain;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -9,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class Player extends Entity
 {
 
-    private static final float RUN_SPEED = 20;
+    private static final float RUN_SPEED = 50;
     private static final float TURN_SPEED = 160;
     private static final float GRAVITY = -50;
     private static final float JUMP = 30;
@@ -25,7 +26,7 @@ public class Player extends Entity
         super(model, position, rx, ry, rz, scale);
     }
 
-    public void move()
+    public void move(Terrain terrain)
     {
         checkInputs();
         super.changeRotation(0, Mouse.getDX() * 0.3f, 0);
@@ -39,11 +40,14 @@ public class Player extends Entity
         super.changePosition(dx, 0, dz);
         upwardsSpeed += GRAVITY * DisplayManager.getDelta();
         super.changePosition(0, upwardsSpeed * DisplayManager.getDelta(), 0);
-        if(super.getPosition().y <= TERRAIN)
+
+        float height = terrain.getHeightOfTerrain(super.getPosition().x, super.getPosition().z);
+
+        if(super.getPosition().y <= height)
         {
             upwardsSpeed = 0;
             grounded = true;
-            super.getPosition().y = TERRAIN;
+            super.getPosition().y = height;
         }
 
     }
@@ -70,11 +74,11 @@ public class Player extends Entity
 
         if(Keyboard.isKeyDown(Keyboard.KEY_D))
         {
-            this.currentTurnSpeed = -RUN_SPEED;
+            this.currentTurnSpeed = RUN_SPEED;
         }
         else if(Keyboard.isKeyDown(Keyboard.KEY_A))
         {
-            this.currentTurnSpeed = RUN_SPEED;
+            this.currentTurnSpeed = -RUN_SPEED;
         }
         else
         {
