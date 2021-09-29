@@ -5,8 +5,8 @@ import Textures.ModelTexture;
 public class TexturedModel
 {
 
-    private RawModel model;
-    private ModelTexture texture;
+    private final RawModel model;
+    private final ModelTexture texture;
 
     public TexturedModel(RawModel model, ModelTexture texture)
     {

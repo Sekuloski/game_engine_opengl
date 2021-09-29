@@ -18,7 +18,7 @@ public abstract class ShaderProgram
     private final int vertexShaderID;
     private final int fragmentShaderID;
 
-    private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 
     public ShaderProgram(String vertexFile, String fragmentFile)
     {
