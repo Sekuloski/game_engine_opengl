@@ -58,24 +58,25 @@ public class MainLoop
         Random random = new Random();
         List<Terrain> terrains = new ArrayList<>();
 
-        for(int i = 0; i < 4; i++)
+        int n = 4;
+
+        for(int i = 0; i < n; i++)
         {
-            for(int j = 0; j < 4; j++)
+            for(int j = 0; j < n; j++)
             {
                 Terrain terrain = new Terrain(i, j, loader, texturePack, blendMap, "heightmap");
                 terrains.add(terrain);
             }
         }
 
-
         for(int i = 0; i < 500; i++)
         {
             float x = random.nextFloat() * 800;
             float z = random.nextFloat() * 800;
-            entities.add(new Entity(tree, new Vector3f(x, terrains.get((int) (Math.abs(x - z)/800)).getHeightOfTerrain(x, z), z), 0, 0, 0, 3));
+            entities.add(new Entity(tree, new Vector3f(x, terrains.get(getTerrainIndex(x, z, n)).getHeightOfTerrain(x, z), z), 0, 0, 0, 3));
             x = random.nextFloat() * 800;
             z = random.nextFloat() * 800;
-            entities.add(new Entity(fern, new Vector3f(x, terrains.get((int) (Math.abs(x - z)/800)).getHeightOfTerrain(x, z), z), 0, 0, 0, 0.6f));
+            entities.add(new Entity(fern, new Vector3f(x, terrains.get(getTerrainIndex(x, z, n)).getHeightOfTerrain(x, z), z), 0, 0, 0, 0.6f));
         }
 
 
@@ -89,15 +90,14 @@ public class MainLoop
         {
             // Test render
             camera.move();
-            player.move(terrains.get((int) (Math.abs(player.getPosition().x - player.getPosition().z)/800)));
-            System.out.println((Math.abs(player.getPosition().x - player.getPosition().z)/800));
+            player.move(terrains.get(getTerrainIndex(player.getPosition().x, player.getPosition().z, n)));
             renderer.processEntity(player);
-            for(Terrain terrain : terrains)
+            for (Terrain terrain : terrains)
             {
                 renderer.processTerrain(terrain);
             }
 
-            for(Entity entity1 : entities)
+            for (Entity entity1 : entities)
             {
                 renderer.processEntity(entity1);
             }
@@ -110,5 +110,13 @@ public class MainLoop
         loader.cleanUp();
         DisplayManager.closeDisplay();
 
+    }
+
+    public static int getTerrainIndex(float x, float z, int n)
+    {
+        x = n * (int) Math.floor(x / 800f);
+        z = (int) Math.floor(z / 800f);
+        System.out.println((int) (x + z));
+        return (int) (x + z);
     }
 }
