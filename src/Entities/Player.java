@@ -21,6 +21,8 @@ public class Player extends Entity
     private float upwardsSpeed = 0;
     private boolean grounded = true;
 
+    public static boolean escPressed = false;
+
     public Player(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale)
     {
         super(model, position, rx, ry, rz, scale);
@@ -29,15 +31,21 @@ public class Player extends Entity
     public void move(Terrain terrain)
     {
         checkInputs();
-        super.changeRotation(0, -Mouse.getDX() * 0.3f, 0);
+        if(!escPressed)
+        {
+            super.changeRotation(0, -Mouse.getDX() * 0.3f, 0);
+        }
+
         float distance = currentSpeed * DisplayManager.getDelta();
         float dx = (float) (distance * Math.sin(Math.toRadians(super.getRy())));
         float dz = (float) (distance * Math.cos(Math.toRadians(super.getRy())));
         super.changePosition(dx, 0, dz);
+
         distance = currentTurnSpeed * DisplayManager.getDelta();
         dz = (float) (distance * Math.sin(Math.toRadians(super.getRy())));
         dx = (float) (distance * Math.cos(Math.toRadians(super.getRy())));
         super.changePosition(dx, 0, dz);
+
         upwardsSpeed += GRAVITY * DisplayManager.getDelta();
         super.changePosition(0, upwardsSpeed * DisplayManager.getDelta(), 0);
 
