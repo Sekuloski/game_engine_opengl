@@ -11,6 +11,8 @@ public class Entity
     private float rx, ry, rz;
     private float scale;
 
+    private int textureIndex = 0;
+
     public Entity(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale)
     {
         this.model = model;
@@ -19,6 +21,29 @@ public class Entity
         this.ry = ry;
         this.rz = rz;
         this.scale = scale;
+    }
+
+    public Entity(TexturedModel model, int index, Vector3f position, float rx, float ry, float rz, float scale)
+    {
+        this.textureIndex = index;
+        this.model = model;
+        this.position = position;
+        this.rx = rx;
+        this.ry = ry;
+        this.rz = rz;
+        this.scale = scale;
+    }
+
+    public float getXOffset()
+    {
+        int column = textureIndex % model.getTexture().getNumberOfRows();
+        return (float) column / (float) model.getTexture().getNumberOfRows();
+    }
+
+    public float getYOffset()
+    {
+        int row = textureIndex / model.getTexture().getNumberOfRows();
+        return (float) row / (float) model.getTexture().getNumberOfRows();
     }
 
     public void changePosition(float dx, float dy, float dz)
