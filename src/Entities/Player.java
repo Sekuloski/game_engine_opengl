@@ -29,7 +29,7 @@ public class Player extends Entity
     public void move(Terrain terrain)
     {
         checkInputs();
-        super.changeRotation(0, Mouse.getDX() * 0.3f, 0);
+        super.changeRotation(0, -Mouse.getDX() * 0.3f, 0);
         float distance = currentSpeed * DisplayManager.getDelta();
         float dx = (float) (distance * Math.sin(Math.toRadians(super.getRy())));
         float dz = (float) (distance * Math.cos(Math.toRadians(super.getRy())));
