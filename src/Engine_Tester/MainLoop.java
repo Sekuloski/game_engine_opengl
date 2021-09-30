@@ -13,6 +13,8 @@ import Terrains.Terrain;
 import Textures.ModelTexture;
 import Textures.TerrainTexture;
 import Textures.TerrainTexturePack;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -69,7 +71,7 @@ public class MainLoop
         List<Light> lights = new ArrayList<>();
         Random random = new Random();
 
-        Light light = new Light(new Vector3f(-3000, 2000, -2000), new Vector3f(0.1f, 0.1f, 0.1f));
+        Light light = new Light(new Vector3f(-300, 200, -200), new Vector3f(0.1f, 0.1f, 0.1f));
         lights.add(light);
         lights.add(new Light(new Vector3f(185, 10, 293), new Vector3f(2, 0, 0), new Vector3f(1, 0.01f, 0.002f)));
         lights.add(new Light(new Vector3f(370, 17, 300), new Vector3f(0, 2, 0), new Vector3f(1, 0.01f, 0.002f)));
@@ -105,15 +107,18 @@ public class MainLoop
         entities.add(new Entity(streetLight, new Vector3f(100, terrains.get(getTerrainIndex(100, 100, n)).getHeightOfTerrain(100, 100), 100), 0, 0, 0, 1));
 
 
-        MasterRenderer renderer = new MasterRenderer();
+        MasterRenderer renderer = new MasterRenderer(loader);
 
-        Player player = new Player(person, new Vector3f(10, 0,10), 0, 235, 0, 1);
+        Player player = new Player(person, new Vector3f(10, 0,10), 0, 45, 0, 1);
 
         Camera camera = new Camera(player);
 
+        Mouse.setGrabbed(true);
+        boolean current = true;
+        boolean pressed = false;
+
         while (!Display.isCloseRequested())
         {
-            // Test render
             camera.move();
             player.move(terrains.get(getTerrainIndex(player.getPosition().x, player.getPosition().z, n)));
             renderer.processEntity(player);
@@ -129,6 +134,20 @@ public class MainLoop
             renderer.render(lights, camera);
             guiRenderer.render(guis);
             DisplayManager.updateDisplay();
+            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
+            {
+                if(!pressed)
+                {
+                    grabMouse(!current);
+                    Player.escPressed = current;
+                    current = !current;
+                    pressed = true;
+                }
+            }
+            else
+            {
+                pressed = false;
+            }
         }
 
         guiRenderer.cleanUp();
@@ -138,6 +157,11 @@ public class MainLoop
 
     }
 
+    public static void grabMouse(boolean next)
+    {
+        Mouse.setGrabbed(next);
+    }
+
     public static int getTerrainIndex(float x, float z, int n)
     {
         x = n * (int) Math.floor(x / 800f);
@@ -145,15 +169,15 @@ public class MainLoop
         return Math.max((int) (x + z), 0);
     }
 
-    public static List<Light> getNearestLights(List<Light> lights)
-    {
-        List<Light> nearestLights = new ArrayList<>();
-
+//    public static List<Light> getNearestLights(List<Light> lights)
+//    {
+//        List<Light> nearestLights = new ArrayList<>();
+//
 //        for(int i = 0; i < MAX_LIGHTS; i++)
 //        {
 //
-//        }
-
-        return  nearestLights;
-    }
+//       }
+//
+//        return  nearestLights;
+//    }
 }
