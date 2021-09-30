@@ -45,6 +45,10 @@ public class MainLoop
         RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
         TexturedModel person = new TexturedModel(playerModel, new ModelTexture(loader.loadTexture("player")));
 
+        ModelData streetLightData = OBJLoader.loadOBJ("street_light");
+        RawModel streetLightModel = loader.loadToVAO(streetLightData.getVertices(), streetLightData.getTextureCoords(), streetLightData.getNormals(), streetLightData.getIndices());
+        TexturedModel streetLight = new TexturedModel(streetLightModel, new ModelTexture(loader.loadTexture("street_light")));
+
 
         TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grass"));
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("soil"));
@@ -57,6 +61,7 @@ public class MainLoop
         tree.getTexture().setHasTransparency(true);
         fern.getTexture().setHasTransparency(true);
         fern.getTexture().setUseFakeLighting(true);
+        streetLight.getTexture().setUseFakeLighting(true);
 
         List<Entity> entities = new ArrayList<>();
         List<Terrain> terrains = new ArrayList<>();
@@ -95,6 +100,9 @@ public class MainLoop
             z = random.nextFloat() * 800;
             entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, terrains.get(getTerrainIndex(x, z, n)).getHeightOfTerrain(x, z), z), 0, 0, 0, 0.6f));
         }
+
+        lights.add(new Light(new Vector3f(100, terrains.get(getTerrainIndex(100, 100, n)).getHeightOfTerrain(100, 100) + 12.8f, 100), new Vector3f(2, 0, 0), new Vector3f(1, 0.01f, 0.002f)));
+        entities.add(new Entity(streetLight, new Vector3f(100, terrains.get(getTerrainIndex(100, 100, n)).getHeightOfTerrain(100, 100), 100), 0, 0, 0, 1));
 
 
         MasterRenderer renderer = new MasterRenderer();
