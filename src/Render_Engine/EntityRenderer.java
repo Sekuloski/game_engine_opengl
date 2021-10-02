@@ -41,6 +41,13 @@ public class EntityRenderer
         }
     }
 
+    private void prepareInstance(Entity entity)
+    {
+        Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRx(), entity.getRy(), entity.getRz(), entity.getScale());
+        shader.loadTM(transformationMatrix);
+        shader.loadOffset(entity.getXOffset(), entity.getYOffset());
+    }
+
     private void prepareTexturedModel(TexturedModel model)
     {
         RawModel rawModel = model.getModel();
@@ -70,13 +77,6 @@ public class EntityRenderer
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
-    }
-
-    private void prepareInstance(Entity entity)
-    {
-        Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRx(), entity.getRy(), entity.getRz(), entity.getScale());
-        shader.loadTM(transformationMatrix);
-        shader.loadOffset(entity.getXOffset(), entity.getYOffset());
     }
 
 }
