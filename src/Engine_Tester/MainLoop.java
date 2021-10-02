@@ -36,7 +36,7 @@ import java.util.Random;
 public class MainLoop
 {
     private static final int MAX_LIGHTS = 8;
-    public static final int SEA_LEVEL = -5;
+    public static final int SEA_LEVEL = 20;
     public static float DX;
     // This is the main class that calls all methods needed to display the project to the screen.
 
@@ -123,7 +123,7 @@ public class MainLoop
 
 
 
-        MasterRenderer renderer = new MasterRenderer(loader);
+        MasterRenderer renderer = new MasterRenderer(loader, sun);
 
         Player player = new Player(person, new Vector3f(10, terrains[0][0].getHeightOfTerrain(10, 10),10), 0, 45, 0, 1);
         entities.add(player);
@@ -188,7 +188,7 @@ public class MainLoop
         }
 
         fbos.cleanUp();
-        guiRenderer.cleanUp();
+        //guiRenderer.cleanUp();
         renderer.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();

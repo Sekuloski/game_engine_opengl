@@ -39,15 +39,15 @@ public class MasterRenderer
 
     private final Map<TexturedModel, List<Entity>> entities = new HashMap<>();
     private final List<Terrain> terrains = new ArrayList<>();
+    private Light light;
 
-
-    public MasterRenderer(Loader loader)
+    public MasterRenderer(Loader loader, Light light)
     {
         enableCulling();
         createProjectionMatrix();
         renderer = new EntityRenderer(shader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
-        skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
+        skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, light);
     }
 
     public static void enableCulling()

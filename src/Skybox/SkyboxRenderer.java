@@ -1,6 +1,7 @@
 package Skybox;
 
 import Entities.Camera;
+import Entities.Light;
 import Models.RawModel;
 import Render_Engine.DisplayManager;
 import Render_Engine.Loader;
@@ -10,6 +11,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class SkyboxRenderer
 {
@@ -73,8 +75,9 @@ public class SkyboxRenderer
     private final int nightTexture;
     private final SkyboxShader shader;
     private float time = 0;
+    private Light light;
 
-    public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix)
+    public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix, Light light)
     {
         cube = loader.loadToVAO(VERTICES, 3);
         texture = loader.loadCubeMap(TEXTURE_FILES);
@@ -84,6 +87,7 @@ public class SkyboxRenderer
         shader.connectTextureUnits();
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
+        this.light = light;
     }
 
     public void render(Camera camera, float r, float g, float b)
@@ -115,6 +119,7 @@ public class SkyboxRenderer
             MasterRenderer.RED = 0;
             MasterRenderer.GREEN = 0;
             MasterRenderer.BLUE = 0;
+            light.setColor(new Vector3f(0, 0, 0));
 
         }
         else if(time >= 5000 && time < 9000)
@@ -125,6 +130,7 @@ public class SkyboxRenderer
             MasterRenderer.RED = blendFactor * RED;
             MasterRenderer.GREEN = blendFactor * GREEN;
             MasterRenderer.BLUE = blendFactor * BLUE;
+            light.setColor(new Vector3f(blendFactor, blendFactor, blendFactor));
         }
         else if (time >= 9000 && time < 21000){
             texture1 = texture;
@@ -134,6 +140,7 @@ public class SkyboxRenderer
             MasterRenderer.RED = RED;
             MasterRenderer.GREEN = GREEN;
             MasterRenderer.BLUE = BLUE;
+            light.setColor(new Vector3f(1, 1, 1));
         }
         else
         {
@@ -144,6 +151,7 @@ public class SkyboxRenderer
             MasterRenderer.RED = RED - blendFactor * RED;
             MasterRenderer.GREEN = GREEN - blendFactor * GREEN;
             MasterRenderer.BLUE = BLUE - blendFactor * BLUE;
+            light.setColor(new Vector3f(1 - blendFactor, 1 - blendFactor, 1 - blendFactor));
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
