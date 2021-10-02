@@ -6,9 +6,13 @@ out vec3 textureCoords;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
-void main(void){
-	
+const vec4 plane = (0, 1, 0, 8);
+
+void main(void)
+{
+
 	gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+	gl_ClipDistance[0] = dot(gl_Position, plane);
 	textureCoords = position;
 	
 }

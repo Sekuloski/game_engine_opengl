@@ -225,6 +225,11 @@ public class Camera
         return roll;
     }
 
+    public void inverPitch()
+    {
+        this.pitch = -this.pitch;
+    }
+
 //    private void calculateAngle()
 //    {
 //        if(Mouse.isButtonDown(0))

@@ -153,6 +153,9 @@ public class SkyboxRenderer
         shader.loadBlendFactor(blendFactor);
     }
 
-
+    public void cleanUp()
+    {
+        shader.cleanUp();
+    }
 
 }
