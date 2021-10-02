@@ -24,9 +24,9 @@ public class MasterRenderer
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000;
 
-    private static final float RED = 0.5444f;
-    private static final float GREEN = 0.62f;
-    private static final float BLUE = 0.69f;
+    public static float RED = 0;
+    public static float GREEN = 0;
+    public static float BLUE = 0;
 
     private Matrix4f projectionMatrix;
 
@@ -38,7 +38,7 @@ public class MasterRenderer
     private final Map<TexturedModel, List<Entity>> entities = new HashMap<>();
     private final List<Terrain> terrains = new ArrayList<>();
 
-    private SkyboxRenderer skyboxRenderer;
+    private final SkyboxRenderer skyboxRenderer;
 
     public MasterRenderer(Loader loader)
     {
@@ -58,6 +58,22 @@ public class MasterRenderer
     public static void disableCulling()
     {
         GL11.glDisable(GL11.GL_CULL_FACE);
+    }
+
+    public void renderScene(List<Entity> entities, Terrain[][] terrains, List<Light> lights, Camera camera)
+    {
+        for (Terrain[] terrainArray : terrains)
+        {
+            for (Terrain terrain : terrainArray)
+            {
+                processTerrain(terrain);
+            }
+        }
+        for(Entity entity : entities)
+        {
+            processEntity(entity);
+        }
+        render(lights, camera);
     }
 
     public void render(List<Light> lights, Camera camera)
@@ -106,6 +122,11 @@ public class MasterRenderer
             newBatch.add(entity);
             entities.put(entityModel, newBatch);
         }
+    }
+
+    public Matrix4f getProjectionMatrix()
+    {
+        return projectionMatrix;
     }
 
     private void createProjectionMatrix()
