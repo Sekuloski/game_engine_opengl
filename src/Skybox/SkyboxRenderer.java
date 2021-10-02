@@ -4,6 +4,7 @@ import Entities.Camera;
 import Models.RawModel;
 import Render_Engine.DisplayManager;
 import Render_Engine.Loader;
+import Render_Engine.MasterRenderer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -14,6 +15,10 @@ public class SkyboxRenderer
 {
 
     private static final float SIZE = 500f;
+
+    private static final float RED = 0.5444f;
+    private static final float GREEN = 0.62f;
+    private static final float BLUE = 0.69f;
 
     private static final float[] VERTICES =
     {
@@ -63,10 +68,10 @@ public class SkyboxRenderer
     private static final String[] TEXTURE_FILES = {"right", "left", "top", "bottom", "back", "front"};
     private static final String[] NIGHT_TEXTURE_FILES = {"nightRight", "nightLeft", "nightTop", "nightBottom", "nightBack", "nightFront"};
 
-    private RawModel cube;
-    private int texture;
-    private int nightTexture;
-    private SkyboxShader shader;
+    private final RawModel cube;
+    private final int texture;
+    private final int nightTexture;
+    private final SkyboxShader shader;
     private float time = 0;
 
     public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix)
@@ -107,23 +112,38 @@ public class SkyboxRenderer
             texture1 = nightTexture;
             texture2 = nightTexture;
             blendFactor = (time - 0)/(5000);
+            MasterRenderer.RED = 0;
+            MasterRenderer.GREEN = 0;
+            MasterRenderer.BLUE = 0;
+
         }
         else if(time >= 5000 && time < 9000)
         {
             texture1 = nightTexture;
             texture2 = texture;
             blendFactor = (time - 5000)/(9000 - 5000);
+            MasterRenderer.RED = blendFactor * RED;
+            MasterRenderer.GREEN = blendFactor * GREEN;
+            MasterRenderer.BLUE = blendFactor * BLUE;
         }
         else if (time >= 9000 && time < 21000){
             texture1 = texture;
             texture2 = texture;
             blendFactor = (time - 9000)/(21000 - 9000);
+            shader.loadFog(RED, GREEN, BLUE);
+            MasterRenderer.RED = RED;
+            MasterRenderer.GREEN = GREEN;
+            MasterRenderer.BLUE = BLUE;
         }
         else
         {
             texture1 = texture;
             texture2 = nightTexture;
             blendFactor = (time - 21000)/(24000 - 21000);
+            shader.loadFog(RED - blendFactor * RED, GREEN - blendFactor * GREEN, BLUE - blendFactor * BLUE);
+            MasterRenderer.RED = RED - blendFactor * RED;
+            MasterRenderer.GREEN = GREEN - blendFactor * GREEN;
+            MasterRenderer.BLUE = BLUE - blendFactor * BLUE;
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);

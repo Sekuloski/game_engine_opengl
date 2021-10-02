@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Terrain
 {
 
-    private static final float SIZE = 800;
+    private static final float SIZE = 1024;
     private static final float MAX_HEIGHT = 40;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 
@@ -36,6 +36,11 @@ public class Terrain
     public float getZ()
     {
         return z;
+    }
+
+    public static float getSize()
+    {
+        return SIZE;
     }
 
     public RawModel getModel()
