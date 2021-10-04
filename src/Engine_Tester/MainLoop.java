@@ -9,6 +9,9 @@ import GUI.GuiTexture;
 import Models.RawModel;
 import Models.TexturedModel;
 import NormalMappingOBJConverter.NormalMappedObjLoader;
+import Particles.ParticleMaster;
+import Particles.ParticleSystem;
+import Particles.ParticleTexture;
 import RenderEngine.*;
 import Terrains.Terrain;
 import Textures.ModelTexture;
@@ -116,8 +119,8 @@ public class MainLoop
                 getHeightOfTerrain(100, 100), 100), 0, 0, 0, 1));
         lights.add(new Light(new Vector3f(100, terrains[(int) Math.floor(100 / Terrain.getSize())][(int) Math.floor(100 / Terrain.getSize())]
                 .getHeightOfTerrain(100, 100) + 12.8f, 100), new Vector3f(2, 0, 0), new Vector3f(1, 0.01f, 0.002f)));
-        normalEntities.add(new Entity(barrelModel, new Vector3f(100, terrains[(int) Math.floor(100 / Terrain.getSize())][(int) Math.floor(100 / Terrain.getSize())].
-                getHeightOfTerrain(100, 100) + 20, 100), 0, 0, 0, 1f));
+//        normalEntities.add(new Entity(barrelModel, new Vector3f(100, terrains[(int) Math.floor(100 / Terrain.getSize())][(int) Math.floor(100 / Terrain.getSize())].
+//                getHeightOfTerrain(100, 100) + 20, 100), 0, 0, 0, 1f));
 
 //        for(int i = 0; i < 500; i++)
 //        {
@@ -132,6 +135,7 @@ public class MainLoop
 //        }
 
         MasterRenderer renderer = new MasterRenderer(loader, sun);
+        ParticleMaster.init(loader, renderer.getProjectionMatrix());
 
         Player player = new Player(person, new Vector3f(10, terrains[0][0].getHeightOfTerrain(10, 10),10), 0, 45, 0, 1);
         entities.add(player);
@@ -150,12 +154,17 @@ public class MainLoop
         List<WaterTile> waterTiles = new ArrayList<>();
         waterTiles.add(new WaterTile(512, 512, SEA_LEVEL));
 
+        ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("particleAtlas"), 4, true);
+        ParticleSystem system = new ParticleSystem(particleTexture, 80, 10, 0.1f, 1, 1.6f);
 
         while (!Display.isCloseRequested())
         {
             DX = Mouse.getDX() * 0.3f;
             camera.move();
             player.move(getTerrain(player.getPosition().x, player.getPosition().z, terrains));
+            ParticleMaster.update(camera);
+
+            system.generateParticles(new Vector3f(player.getPosition().x, player.getPosition().y + 10, player.getPosition().z));
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
@@ -163,19 +172,25 @@ public class MainLoop
             float distance = 2 * (camera.getPosition().y - SEA_LEVEL);
             camera.getPosition().y -= distance;
             camera.inverPitch();
-            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, 1, 0, -SEA_LEVEL + 1f));
+            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, 1, 0, -SEA_LEVEL + 1f),
+                    new Vector4f(0, 0, 0, 0));
             camera.getPosition().y += distance;
             camera.inverPitch();
 
             fbos.bindRefractionFrameBuffer();
-            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, -1, 0, SEA_LEVEL + 1f));
+            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, -1, 0, SEA_LEVEL + 1f),
+                    new Vector4f(0, 0, 0, 0));
 
             fbos.unbindCurrentFrameBuffer();
 
-            GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
 
-            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
+            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(-1, 0, 0, player.getPosition().x + 500)
+                                                                                   , new Vector4f(0, 0, -1, player.getPosition().z + 500));
             waterRenderer.render(waterTiles, camera, lights);
+
+            ParticleMaster.renderParticles(camera);
+
             guiRenderer.render(guis);
 
             DisplayManager.updateDisplay();
@@ -199,6 +214,7 @@ public class MainLoop
         //guiRenderer.cleanUp();
         renderer.cleanUp();
         loader.cleanUp();
+        ParticleMaster.cleanUp();
         DisplayManager.closeDisplay();
 
     }
