@@ -24,7 +24,7 @@ public class MasterRenderer
 
     private static final float FOV = 70;
     private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 1000;
+    private static final float FAR_PLANE = 700;
 
     public static float RED = 0;
     public static float GREEN = 0;
@@ -65,7 +65,8 @@ public class MasterRenderer
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain[][] terrains, List<Light> lights, Camera camera, Vector4f clipPlane)
+    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain[][] terrains, List<Light> lights, Camera camera,
+                                                    Vector4f clipPlane1, Vector4f clipPlane2)
     {
         for (Terrain[] terrainArray : terrains)
         {
@@ -82,22 +83,22 @@ public class MasterRenderer
         {
             processNormalMapEntity(entity);
         }
-        render(lights, camera, clipPlane);
+        render(lights, camera, clipPlane1, clipPlane2);
     }
 
-    public void render(List<Light> lights, Camera camera, Vector4f clipPlane)
+    public void render(List<Light> lights, Camera camera, Vector4f clipPlane1, Vector4f clipPlane2)
     {
         prepare();
         shader.start();
-        shader.loadClipPlane(clipPlane);
+        shader.loadClipPlane(clipPlane1, clipPlane2);
         shader.loadSkyColor(RED, GREEN, BLUE);
         shader.loadLights(lights);
         shader.loadViewMatrix(camera);
         renderer.render(entities);
         shader.stop();
-        normalMappingRenderer.render(normalMapEntities, clipPlane, lights, camera);
+        normalMappingRenderer.render(normalMapEntities, clipPlane1, lights, camera);
         terrainShader.start();
-        terrainShader.loadClipPlane(clipPlane);
+        terrainShader.loadClipPlane(clipPlane1, clipPlane2);
         terrainShader.loadSkyColor(RED, GREEN, BLUE);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);

@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Terrain
 {
 
-    private static final float SIZE = 2048;
+    private static final float SIZE = 4096;
     private static final float MAX_HEIGHT = 80;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 

@@ -11,12 +11,11 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 public class SkyboxRenderer
 {
 
-    private static final float SIZE = 500f;
+    private static final float SIZE = 400f;
 
     private static final float RED = 0.5444f;
     private static final float GREEN = 0.62f;
@@ -110,48 +109,48 @@ public class SkyboxRenderer
         time %= 24000;
         int texture1;
         int texture2;
+        texture1 = texture;
+        texture2 = texture;
         float blendFactor;
         if(time >= 0 && time < 5000)
         {
-            texture1 = nightTexture;
-            texture2 = nightTexture;
+        //    texture1 = nightTexture;
+        //    texture2 = nightTexture;
             blendFactor = (time - 0)/(5000);
-            MasterRenderer.RED = 0;
-            MasterRenderer.GREEN = 0;
-            MasterRenderer.BLUE = 0;
-            light.setColor(new Vector3f(0, 0, 0));
+           // MasterRenderer.RED = 0;
+           // MasterRenderer.GREEN = 0;
+           // MasterRenderer.BLUE = 0;
+           // light.setColor(new Vector3f(0, 0, 0));
 
         }
         else if(time >= 5000 && time < 9000)
         {
-            texture1 = nightTexture;
-            texture2 = texture;
+       //     texture1 = nightTexture;
+        //    texture2 = texture;
             blendFactor = (time - 5000)/(9000 - 5000);
-            MasterRenderer.RED = blendFactor * RED;
-            MasterRenderer.GREEN = blendFactor * GREEN;
-            MasterRenderer.BLUE = blendFactor * BLUE;
-            light.setColor(new Vector3f(blendFactor, blendFactor, blendFactor));
+           // MasterRenderer.RED = blendFactor * RED;
+           // MasterRenderer.GREEN = blendFactor * GREEN;
+           // MasterRenderer.BLUE = blendFactor * BLUE;
+           // light.setColor(new Vector3f(blendFactor, blendFactor, blendFactor));
         }
         else if (time >= 9000 && time < 21000){
-            texture1 = texture;
-            texture2 = texture;
+            //texture1 = texture;
+            //texture2 = texture;
             blendFactor = (time - 9000)/(21000 - 9000);
-            shader.loadFog(RED, GREEN, BLUE);
             MasterRenderer.RED = RED;
             MasterRenderer.GREEN = GREEN;
             MasterRenderer.BLUE = BLUE;
-            light.setColor(new Vector3f(1, 1, 1));
+           // light.setColor(new Vector3f(1, 1, 1));
         }
         else
         {
-            texture1 = texture;
-            texture2 = nightTexture;
+         //   texture1 = texture;
+         //   texture2 = nightTexture;
             blendFactor = (time - 21000)/(24000 - 21000);
-            shader.loadFog(RED - blendFactor * RED, GREEN - blendFactor * GREEN, BLUE - blendFactor * BLUE);
-            MasterRenderer.RED = RED - blendFactor * RED;
-            MasterRenderer.GREEN = GREEN - blendFactor * GREEN;
-            MasterRenderer.BLUE = BLUE - blendFactor * BLUE;
-            light.setColor(new Vector3f(1 - blendFactor, 1 - blendFactor, 1 - blendFactor));
+           // MasterRenderer.RED = RED - blendFactor * RED;
+           // MasterRenderer.GREEN = GREEN - blendFactor * GREEN;
+           // MasterRenderer.BLUE = BLUE - blendFactor * BLUE;
+           // light.setColor(new Vector3f(1 - blendFactor, 1 - blendFactor, 1 - blendFactor));
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);

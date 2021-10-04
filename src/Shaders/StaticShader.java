@@ -30,7 +30,8 @@ public class StaticShader extends ShaderProgram
     private int skyColor_location;
     private int numberOfRows_location;
     private int offset_location;
-    private int plane_location;
+    private int plane1_location;
+    private int plane2_location;
 
     public StaticShader()
     {
@@ -57,7 +58,8 @@ public class StaticShader extends ShaderProgram
         skyColor_location = super.getUniformLocation("skyColor");
         numberOfRows_location = super.getUniformLocation("numberOfRows");
         offset_location = super.getUniformLocation("offset");
-        plane_location = super.getUniformLocation("plane");
+        plane1_location = super.getUniformLocation("plane1");
+        plane2_location = super.getUniformLocation("plane2");
 
         lightColor_location = new int[MAX_LIGHTS];
         lightPosition_location = new int[MAX_LIGHTS];
@@ -71,9 +73,10 @@ public class StaticShader extends ShaderProgram
         }
     }
 
-    public void loadClipPlane(Vector4f plane)
+    public void loadClipPlane(Vector4f plane1, Vector4f plane2)
     {
-        super.loadVector(plane_location, plane);
+        super.loadVector(plane1_location, plane1);
+        super.loadVector(plane2_location, plane2);
     }
 
     public void loadNumberOfRows(int numberOfRows)

@@ -43,44 +43,48 @@ public class Camera
     {
        // calculateAngle();
         checkInputs();
-        if(detached)
+        if(!Player.escPressed)
         {
-            if(flag2)
+            if(detached)
             {
-                lastPitch = pitch;
-                lastYaw = yaw;
-                lastRoll = roll;
-                flag2 = false;
+                if(flag2)
+                {
+                    lastPitch = pitch;
+                    lastYaw = yaw;
+                    lastRoll = roll;
+                    flag2 = false;
+                }
+                changeRotation(0, MainLoop.DX,-Mouse.getDY() * 0.1f);
+
+                float distance = currentSpeed * DisplayManager.getDelta();
+                float dx = (float) (distance * Math.sin(Math.toRadians(player.getRy())));
+                float dz = (float) (distance * Math.cos(Math.toRadians(player.getRy())));
+                changePosition(dx, 0, dz);
+
+                distance = currentFlySpeed * DisplayManager.getDelta();
+                changePosition(0, distance, 0);
+
+                distance = currentTurnSpeed * DisplayManager.getDelta();
+                dx = (float) (distance * Math.sin(Math.toRadians(player.getRy() + 90)));
+                dz = (float) (distance * Math.cos(Math.toRadians(player.getRy() + 90)));
+                changePosition(dx, 0, dz);
             }
-            changeRotation(0, MainLoop.DX,-Mouse.getDY() * 0.1f);
-
-            float distance = currentSpeed * DisplayManager.getDelta();
-            float dx = (float) (distance * Math.sin(Math.toRadians(player.getRy())));
-            float dz = (float) (distance * Math.cos(Math.toRadians(player.getRy())));
-            changePosition(dx, 0, dz);
-
-            distance = currentFlySpeed * DisplayManager.getDelta();
-            changePosition(0, distance, 0);
-
-            distance = currentTurnSpeed * DisplayManager.getDelta();
-            dx = (float) (distance * Math.sin(Math.toRadians(player.getRy() + 90)));
-            dz = (float) (distance * Math.cos(Math.toRadians(player.getRy() + 90)));
-            changePosition(dx, 0, dz);
-        }
-        else
-        {
-            if(!flag2)
+            else
             {
-                pitch = lastPitch;
-                yaw = lastYaw;
-                roll = lastRoll;
-                flag2 = true;
+                if(!flag2)
+                {
+                    pitch = lastPitch;
+                    yaw = lastYaw;
+                    roll = lastRoll;
+                    flag2 = true;
+                }
+
+                calculatePitch();
+                float horizontal = calculateHorDistance();
+                float vertical = calculateVerDistance();
+                calculatePosition(horizontal, vertical);
             }
 
-            calculatePitch();
-            float horizontal = calculateHorDistance();
-            float vertical = calculateVerDistance();
-            calculatePosition(horizontal, vertical);
         }
 
     }

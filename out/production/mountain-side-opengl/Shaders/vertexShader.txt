@@ -17,7 +17,9 @@ uniform vec3 lightPosition[8];
 uniform float useFakeLighting;
 uniform float numberOfRows;
 uniform vec2 offset;
-uniform vec4 plane;
+uniform vec4 plane1;
+uniform vec4 plane2;
+uniform vec4 plane3;
 
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -27,7 +29,9 @@ void main(void)
 
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
 
-    gl_ClipDistance[0] = dot(worldPosition, plane);
+    gl_ClipDistance[0] = dot(worldPosition, plane1);
+    gl_ClipDistance[1] = dot(worldPosition, plane2);
+    gl_ClipDistance[2] = dot(worldPosition, plane3);
 
 
     vec4 positionRelativeToCamera = viewMatrix * worldPosition;
