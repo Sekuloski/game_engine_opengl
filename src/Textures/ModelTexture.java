@@ -4,6 +4,17 @@ public class ModelTexture
 {
 
     private final int textureID;
+    private int normalMap;
+
+    public int getNormalMap()
+    {
+        return normalMap;
+    }
+
+    public void setNormalMap(int normalMap)
+    {
+        this.normalMap = normalMap;
+    }
 
     private float shineDamper = 1;
     private float reflectivity = 0;

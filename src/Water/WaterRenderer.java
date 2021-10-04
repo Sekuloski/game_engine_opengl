@@ -3,8 +3,9 @@ package Water;
 import Entities.Camera;
 import Entities.Light;
 import Models.RawModel;
-import Render_Engine.DisplayManager;
-import Render_Engine.Loader;
+import RenderEngine.DisplayManager;
+import RenderEngine.Loader;
+import RenderEngine.MasterRenderer;
 import ToolBox.Maths;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
@@ -15,16 +16,16 @@ import java.util.List;
 public class WaterRenderer {
 
 	private RawModel quad;
-	private WaterShader shader;
-	private WaterFrameBuffers fbos;
+	private final WaterShader shader;
+	private final WaterFrameBuffers fbos;
 
 	private static final String DUDV_MAP = "waterDUDV";
 	private static final String NORMAL_MAP = "matchingNormalMap";
 	private static final float WAVE_SPEED = 0.03f;
 
 	private float moveFactor = 0;
-	private int dudv;
-	private int normal;
+	private final int dudv;
+	private final int normal;
 
 	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos) {
 		this.shader = shader;
@@ -38,8 +39,8 @@ public class WaterRenderer {
 		setUpVAO(loader);
 	}
 
-	public void render(List<WaterTile> water, Camera camera, Light sun) {
-		prepareRender(camera, sun);
+	public void render(List<WaterTile> water, Camera camera, List<Light> lights) {
+		prepareRender(camera, lights);
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
@@ -50,13 +51,14 @@ public class WaterRenderer {
 		unbind();
 	}
 	
-	private void prepareRender(Camera camera, Light sun){
+	private void prepareRender(Camera camera, List<Light> lights){
 		shader.start();
 		shader.loadViewMatrix(camera);
 		moveFactor += WAVE_SPEED * DisplayManager.getDelta();
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
-		shader.loadLight(sun);
+		shader.loadLights(lights);
+		shader.loadSkyColor(MasterRenderer.RED, MasterRenderer.BLUE, MasterRenderer.GREEN);
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);

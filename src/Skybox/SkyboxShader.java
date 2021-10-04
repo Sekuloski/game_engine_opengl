@@ -1,6 +1,6 @@
 package Skybox;
 
-import Render_Engine.DisplayManager;
+import RenderEngine.DisplayManager;
 import org.lwjgl.util.vector.Matrix4f;
 
 import Entities.Camera;

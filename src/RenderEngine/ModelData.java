@@ -1,4 +1,4 @@
-package Render_Engine;
+package RenderEngine;
 
 public class ModelData {
 

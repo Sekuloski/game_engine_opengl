@@ -1,7 +1,7 @@
 package GUI;
 
 import Models.RawModel;
-import Render_Engine.Loader;
+import RenderEngine.Loader;
 import ToolBox.Maths;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;

@@ -2,7 +2,7 @@ package Entities;
 
 import Engine_Tester.MainLoop;
 import Models.TexturedModel;
-import Render_Engine.DisplayManager;
+import RenderEngine.DisplayManager;
 import Terrains.Terrain;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;

@@ -1,4 +1,4 @@
-package Render_Engine;
+package RenderEngine;
 
 import org.lwjgl.util.vector.Vector3f;
 

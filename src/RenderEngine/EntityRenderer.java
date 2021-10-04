@@ -1,4 +1,4 @@
-package Render_Engine;
+package RenderEngine;
 
 import Entities.Entity;
 import Models.RawModel;

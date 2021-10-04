@@ -1,4 +1,4 @@
-package Render_Engine;
+package RenderEngine;
 
 import Models.RawModel;
 import Shaders.TerrainShader;
