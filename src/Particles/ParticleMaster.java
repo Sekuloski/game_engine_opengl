@@ -23,7 +23,8 @@ public class ParticleMaster
 
         while(mapIterator.hasNext())
         {
-            List<Particle> list = mapIterator.next().getValue();
+            Map.Entry<ParticleTexture, List<Particle>> entry = mapIterator.next();
+            List<Particle> list = entry.getValue();
             Iterator<Particle> iterator = list.iterator();
             while(iterator.hasNext())
             {
@@ -38,7 +39,10 @@ public class ParticleMaster
                     }
                 }
             }
-            InsertionSort.sortHighToLow(list);
+            if(!entry.getKey().usesAdditiveBlending())
+            {
+                InsertionSort.sortHighToLow(list);
+            }
         }
     }
 
