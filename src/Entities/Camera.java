@@ -154,7 +154,6 @@ public class Camera
             if(flag)
             {
                 detached = !detached;
-                System.out.println(detached);
             }
             flag = false;
         }
