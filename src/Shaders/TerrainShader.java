@@ -33,6 +33,8 @@ public class TerrainShader extends ShaderProgram
     private int blendMap_location;
     private int plane1_location;
     private int plane2_location;
+    private int shadowMap_location;
+    private int toShadowMap_location;
 
 
     public TerrainShader()
@@ -64,6 +66,8 @@ public class TerrainShader extends ShaderProgram
         blendMap_location = super.getUniformLocation("blendMap");
         plane1_location = super.getUniformLocation("plane1");
         plane2_location = super.getUniformLocation("plane2");
+        toShadowMap_location = super.getUniformLocation("toShadowMapSpace");
+        shadowMap_location = super.getUniformLocation("shadowMap");
 
         lightColor_location = new int[MAX_LIGHTS];
         lightPosition_location = new int[MAX_LIGHTS];
@@ -75,6 +79,11 @@ public class TerrainShader extends ShaderProgram
             lightPosition_location[i] = super.getUniformLocation("lightPosition[" + i + "]");
             attenuation_location[i] = super.getUniformLocation("attenuation[" + i + "]");
         }
+    }
+
+    public void loadToShadowMapSpaceMatrix(Matrix4f matrix)
+    {
+        super.loadMatrix(toShadowMap_location, matrix);
     }
 
     public void loadClipPlane(Vector4f plane1, Vector4f plane2)
@@ -90,6 +99,7 @@ public class TerrainShader extends ShaderProgram
         super.loadInt(g_location, 2);
         super.loadInt(b_location, 3);
         super.loadInt(blendMap_location, 4);
+        super.loadInt(shadowMap_location, 5);
 
     }
 

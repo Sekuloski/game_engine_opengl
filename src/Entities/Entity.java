@@ -10,10 +10,11 @@ public class Entity
     private Vector3f position;
     private float rx, ry, rz;
     private float scale;
+    private float collisionScale;
 
     private int textureIndex = 0;
 
-    public Entity(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale)
+    public Entity(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale, float collisionScale)
     {
         this.model = model;
         this.position = position;
@@ -21,6 +22,7 @@ public class Entity
         this.ry = ry;
         this.rz = rz;
         this.scale = scale;
+        this.collisionScale = collisionScale;
     }
 
     public Entity(TexturedModel model, int index, Vector3f position, float rx, float ry, float rz, float scale)
@@ -118,5 +120,10 @@ public class Entity
     public void setScale(float scale)
     {
         this.scale = scale;
+    }
+
+    public float getCollisionScale()
+    {
+        return collisionScale;
     }
 }

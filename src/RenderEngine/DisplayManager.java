@@ -22,8 +22,9 @@ public class DisplayManager {
         {
 
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-            Display.create(new PixelFormat(), attribs);
+            Display.create(new PixelFormat().withSamples(8), attribs);
             Display.setTitle("OpenGL PROJECT");
+            GL11.glEnable(GL13.GL_MULTISAMPLE);
 
         } catch (LWJGLException e)
         {

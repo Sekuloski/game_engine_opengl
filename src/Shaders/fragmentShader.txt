@@ -9,6 +9,8 @@ in float visibility;
 out vec4 outColor;
 
 uniform sampler2D textureSampler;
+uniform sampler2D specularMap;
+uniform float usesSpecularMap;
 
 uniform vec3 lightColor[8];
 uniform float shineDamper;
@@ -46,6 +48,12 @@ void main(void)
     if(textureColor.a < 0.5)
     {
         discard;
+    }
+
+    if(usesSpecularMap > 0.5)
+    {
+        vec4 mapInfo = texture(specularMap, outTextureCoords);
+        totalSpecular *= mapInfo.r;
     }
 
     outColor = vec4(totalDiffuse, 1.0) * textureColor + vec4(totalSpecular, 1.0);

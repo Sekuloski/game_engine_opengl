@@ -10,23 +10,23 @@ import org.lwjgl.util.vector.Vector3f;
 public class Particle
 {
 
-    private Vector3f position;
-    private Vector3f velocity;
-    private float gravityEffect;
-    private float lifeLength;
-    private float rotation;
-    private float scale;
+    private final Vector3f position;
+    private final Vector3f velocity;
+    private final float gravityEffect;
+    private final float lifeLength;
+    private final float rotation;
+    private final float scale;
     private float elapsedTime = 0;
 
-    private ParticleTexture texture;
+    private final ParticleTexture texture;
     private float distance;
 
-    private Vector2f texOffset1 = new Vector2f();
+    private final Vector2f texOffset1 = new Vector2f();
 
-    private Vector2f texOffset2 = new Vector2f();
+    private final Vector2f texOffset2 = new Vector2f();
     private float blendFactor;
 
-    private Vector3f reusableChange = new Vector3f();
+    private final Vector3f reusableChange = new Vector3f();
 
     public Particle(Vector3f position, Vector3f velocity, float gravityEffect, float lifeLength, float rotation, float scale, ParticleTexture texture)
     {

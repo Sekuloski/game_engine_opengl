@@ -16,6 +16,13 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+*
+* Class that handles loading VBOs to a VAO.
+*
+*/
+
+
 public class Loader
 {
 
@@ -28,7 +35,7 @@ public class Loader
         int vbo = GL15.glGenBuffers();
         vbos.add(vbo);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, count * 4L, GL15.GL_STREAM_DRAW);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER,count * 4L, GL15.GL_STREAM_DRAW);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return vbo;
     }
@@ -93,7 +100,16 @@ public class Loader
             texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
+            if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic)
+            {
+                float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+            }
+            else
+            {
+                System.out.println("Not supported");
+            }
         } catch (IOException e)
         {
             e.printStackTrace();

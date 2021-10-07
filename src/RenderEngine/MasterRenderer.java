@@ -7,10 +7,12 @@ import Models.TexturedModel;
 import NormalMappingRenderer.NormalMappingRenderer;
 import Shaders.StaticShader;
 import Shaders.TerrainShader;
+import Shadows.ShadowMapMasterRenderer;
 import Skybox.SkyboxRenderer;
 import Terrains.Terrain;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -22,9 +24,9 @@ import java.util.Map;
 public class MasterRenderer
 {
 
-    private static final float FOV = 70;
-    private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 700;
+    public static final float FOV = 70;
+    public static final float NEAR_PLANE = 0.1f;
+    public static final float FAR_PLANE = 1000;
 
     public static float RED = 0;
     public static float GREEN = 0;
@@ -38,13 +40,14 @@ public class MasterRenderer
     private final TerrainShader terrainShader = new TerrainShader();
     private final SkyboxRenderer skyboxRenderer;
     private final NormalMappingRenderer normalMappingRenderer;
+    private final ShadowMapMasterRenderer shadowMapMasterRenderer;
 
     private final Map<TexturedModel, List<Entity>> entities = new HashMap<>();
     private final Map<TexturedModel, List<Entity>> normalMapEntities = new HashMap<>();
 
     private final List<Terrain> terrains = new ArrayList<>();
 
-    public MasterRenderer(Loader loader, Light light)
+    public MasterRenderer(Loader loader, Light light, Camera camera)
     {
         enableCulling();
         createProjectionMatrix();
@@ -52,12 +55,31 @@ public class MasterRenderer
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
         skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, light);
         normalMappingRenderer = new NormalMappingRenderer(projectionMatrix);
+        this.shadowMapMasterRenderer = new ShadowMapMasterRenderer(camera);
     }
 
     public static void enableCulling()
     {
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
+    }
+
+    public void renderShadowMap(List<Entity> entityList, List<Entity> normalMappedEntities, Light sun){
+        for(Entity entity : entityList){
+            processEntity(entity);
+        }
+        for(Entity entity : normalMappedEntities){
+            processEntity(entity);
+        }
+        shadowMapMasterRenderer.render(normalMapEntities, sun);
+        normalMapEntities.clear();
+        shadowMapMasterRenderer.render(entities, sun);
+        entities.clear();
+    }
+
+    public int getShadowMapTexture()
+    {
+        return shadowMapMasterRenderer.getShadowMap();
     }
 
     public static void disableCulling()
@@ -102,7 +124,7 @@ public class MasterRenderer
         terrainShader.loadSkyColor(RED, GREEN, BLUE);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
-        terrainRenderer.render(terrains);
+        terrainRenderer.render(terrains, shadowMapMasterRenderer.getToShadowMapSpaceMatrix());
         terrainShader.stop();
         skyboxRenderer.render(camera, RED, GREEN, BLUE);
         terrains.clear();
@@ -117,8 +139,10 @@ public class MasterRenderer
     public void prepare()
     {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(RED, GREEN, BLUE, 1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL13.glActiveTexture(GL13.GL_TEXTURE5);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
     }
 
     public void processEntity(Entity entity)
@@ -161,7 +185,7 @@ public class MasterRenderer
     private void createProjectionMatrix()
     {
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;
 

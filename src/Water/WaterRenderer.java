@@ -27,7 +27,8 @@ public class WaterRenderer {
 	private final int dudv;
 	private final int normal;
 
-	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos) {
+	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos)
+	{
 		this.shader = shader;
 		this.fbos = fbos;
 		dudv = loader.loadTexture(DUDV_MAP);
@@ -39,7 +40,8 @@ public class WaterRenderer {
 		setUpVAO(loader);
 	}
 
-	public void render(List<WaterTile> water, Camera camera, List<Light> lights) {
+	public void render(List<WaterTile> water, Camera camera, List<Light> lights)
+	{
 		prepareRender(camera, lights);
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
@@ -51,7 +53,8 @@ public class WaterRenderer {
 		unbind();
 	}
 	
-	private void prepareRender(Camera camera, List<Light> lights){
+	private void prepareRender(Camera camera, List<Light> lights)
+	{
 		shader.start();
 		shader.loadViewMatrix(camera);
 		moveFactor += WAVE_SPEED * DisplayManager.getDelta();

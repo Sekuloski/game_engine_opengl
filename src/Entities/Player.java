@@ -7,6 +7,8 @@ import Terrains.Terrain;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.List;
+
 public class Player extends Entity
 {
 
@@ -21,7 +23,6 @@ public class Player extends Entity
     private float upwardsSpeed = 0;
     private boolean grounded = true;
     private boolean crouching = false;
-    private boolean sprinting = false;
     private float lastRX;
     private float lastRY;
     private float lastRZ;
@@ -31,7 +32,7 @@ public class Player extends Entity
 
     public Player(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale)
     {
-        super(model, position, rx, ry, rz, scale);
+        super(model, position, rx, ry, rz, scale, 2);
         lastRX = rx;
         lastRY = ry;
         lastRZ = rz;
@@ -93,6 +94,53 @@ public class Player extends Entity
 
     }
 
+
+
+    public void checkCollisions(List<Entity> entities)
+    {
+        for(Entity entity : entities)
+        {
+            if(entity == this)
+            {
+                continue;
+            }
+            float entityX = entity.getPosition().x;
+            float entityZ = entity.getPosition().z;
+            float playerX = getPosition().x;
+            float playerZ = getPosition().z;
+            boolean collisionX = entityX + entity.getCollisionScale() >= playerX &&
+                    playerX + getCollisionScale() >= entityX;
+
+            boolean collisionNX = entityX - entity.getCollisionScale() <= playerX &&
+                    playerX - getCollisionScale() <= entityX;
+
+            boolean collisionZ = entityZ + entity.getCollisionScale() >= playerZ &&
+                    playerZ + getCollisionScale() >= entityZ;
+
+            boolean collisionNZ = entityZ - entity.getCollisionScale() <= playerZ &&
+                    playerZ - getCollisionScale() <= entityZ;
+
+            if (collisionX && collisionZ)
+            {
+                if(getPosition().x > entityX + entity.getCollisionScale())
+                {
+                    setPosition(new Vector3f(entityX + entity.getCollisionScale(), getPosition().y, getPosition().z));
+                }
+                else if(getPosition().z > entityZ + entity.getCollisionScale())
+                {
+                    setPosition(new Vector3f(getPosition().x, getPosition().y,entityZ + entity.getCollisionScale()));
+                }
+            }
+            else if (collisionNX && collisionNZ)
+            {
+                setPosition(new Vector3f(getPosition().x, getPosition().y,entityZ - entity.getCollisionScale()));
+
+                //setPosition(new Vector3f(entityX - entity.getCollisionScale(), getPosition().y, getPosition().z));
+
+            }
+        }
+    }
+
     private void jump()
     {
         this.upwardsSpeed = JUMP;
@@ -135,6 +183,7 @@ public class Player extends Entity
             }
         }
 
+        boolean sprinting;
         if(!crouching && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
         {
             RUN_SPEED = 75;
