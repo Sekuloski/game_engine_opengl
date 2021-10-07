@@ -69,6 +69,10 @@ public class MainLoop
         RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
         TexturedModel person = new TexturedModel(playerModel, new ModelTexture(loader.loadTexture("player")));
 
+        RawModel wallData = NormalMappedObjLoader.loadOBJ("wall", loader);
+        TexturedModel wall = new TexturedModel(wallData, new ModelTexture(loader.loadTexture("wall_disp")));
+        wall.getTexture().setNormalMap(loader.loadTexture("1_NORMAL"));
+
         RawModel barrelData = NormalMappedObjLoader.loadOBJ("barrel", loader);
         ModelTexture barrelTexture = new ModelTexture(loader.loadTexture("barrel"));
         TexturedModel barrelModel = new TexturedModel(barrelData, barrelTexture);
@@ -117,24 +121,31 @@ public class MainLoop
                     .getHeightOfTerrain(x, z), z), 0, 0, 0, 1));
         }
 
-//        normalEntities.add(new Entity(barrelModel, new Vector3f(100, terrains[(int) Math.floor(100 / Terrain.getSize())][(int) Math.floor(100 / Terrain.getSize())].
-//                getHeightOfTerrain(100, 100) + 20, 100), 0, 0, 0, 1f));
 
-//        RawModel houseData = NormalMappedObjLoader.loadOBJ("Medieval_House", loader);
-//        ModelTexture houseTexture = new ModelTexture(loader.loadTexture("Medieval_House_Diff"));
-//        TexturedModel houseModel = new TexturedModel(barrelData, barrelTexture);
-//        barrelModel.getTexture().setShineDamper(10);
-//        barrelModel.getTexture().setReflectivity(0.5f);
-//        barrelModel.getTexture().setNormalMap(loader.loadTexture("Medieval_House_Nor"));
-//        barrelModel.getTexture().setSpecularMap(loader.loadTexture("Medieval_House_Spec_Red"));
 
-//        normalEntities.add(new Entity(houseModel, new Vector3f(1300, getTerrain(1300, 500,
-//                terrains).getHeightOfTerrain(1300, 500), 500), 0, 0, 0, 1f, 100));
+        for(int i = 0; i < 32; i++)
+        {
+            normalEntities.add(new Entity(wall, new Vector3f(-32, -50, 32 + 64 * i), 0, 0, 0, 32, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(32 + 64 * i, -50, -32), 0, 0, 0, 32, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(2080, -50, 32 + 64 * i), 0, 0, 0, 32, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(32 + 64 * i, -50, 2080), 0, 0, 0, 32, 1));
+        }
+
+        RawModel houseData = NormalMappedObjLoader.loadOBJ("Medieval_House", loader);
+        ModelTexture houseTexture = new ModelTexture(loader.loadTexture("Medieval_House_Diff"));
+        TexturedModel houseModel = new TexturedModel(houseData, houseTexture);
+        barrelModel.getTexture().setShineDamper(10);
+        barrelModel.getTexture().setReflectivity(0.5f);
+        barrelModel.getTexture().setNormalMap(loader.loadTexture("Medieval_House_Nor"));
+        barrelModel.getTexture().setSpecularMap(loader.loadTexture("Medieval_House_Spec_Red"));
+
+        normalEntities.add(new Entity(houseModel, new Vector3f(1300, getTerrain(1300, 500,
+                terrains).getHeightOfTerrain(1300, 500), 500), 0, 0, 0, 0.2f, 100));
 
         Light sunLight = new Light(new Vector3f(sunX, sunY, sunZ), new Vector3f(1f, 1f, 1f));
         lights.add(sunLight);
 
-        Player player = new Player(person, new Vector3f(10, terrains[0][0].getHeightOfTerrain(10, 10),10), 0, 45, 0, 1);
+        Player player = new Player(person, new Vector3f(1300, terrains[0][0].getHeightOfTerrain(1300, 500),500), 0, 45, 0, 1);
         Camera camera = new Camera(player);
         MasterRenderer renderer = new MasterRenderer(loader, sunLight, camera);
         new Lamp(entities, lights, loader, terrains, 200, 200);
