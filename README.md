@@ -1,4 +1,4 @@
 # mountain-side-opengl
-This is a simple project made using the Light Weight Java Game Library 2.
 
-To run the project go to src/MainLoop and run the main method.
+This branch is the beggining of the project. All the first steps required to render entities, terrains and lights were implemented here.
+To test this branch simply run the main method in the MainLoop class.
