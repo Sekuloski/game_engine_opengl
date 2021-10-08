@@ -43,9 +43,9 @@ public class MainLoop
     private static boolean current = true;
     private static boolean pressed = false;
     private static float time = 0;
-    private static final int sunX = 300000;
+    private static final int sunX = -300000;
     private static final int sunY = 200000;
-    private static final int sunZ = 200000;
+    private static final int sunZ = -200000;
 
     // This is the main class that calls all methods needed to display the project to the screen.
 
@@ -55,9 +55,15 @@ public class MainLoop
         DisplayManager.createDisplay();
         Loader loader = new Loader();
 
-        ModelData treeData = OBJLoader.loadOBJ("tree");
-        RawModel treeModel = loader.loadToVAO(treeData.getVertices(), treeData.getTextureCoords(), treeData.getNormals(), treeData.getIndices());
-        TexturedModel tree = new TexturedModel(treeModel, new ModelTexture(loader.loadTexture("tree")));
+        List<Entity> entities = new ArrayList<>();
+        List<Entity> normalEntities = new ArrayList<>();
+        Terrain[][] terrains = new Terrain[1][1];
+        List<GuiTexture> guis = new ArrayList<>();
+        List<Light> lights = new ArrayList<>();
+        Random random = new Random();
+
+        TexturedModel tree = getModel("tree", "tree", loader);
+        TexturedModel person = getModel("player", "player", loader);
 
         ModelData fernData = OBJLoader.loadOBJ("fern");
         ModelTexture fernTexture = new ModelTexture(loader.loadTexture("fern"));
@@ -65,13 +71,12 @@ public class MainLoop
         RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
         TexturedModel fern = new TexturedModel(fernModel, fernTexture);
 
-        ModelData playerData = OBJLoader.loadOBJ("player2");
-        RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
-        TexturedModel person = new TexturedModel(playerModel, new ModelTexture(loader.loadTexture("player")));
+        TexturedModel well_roof = getNormalModel("well_roof", "well_roof_diffuse", "well_roof_normal", "well_roof_specular", loader);
+        TexturedModel well_middle = getNormalModel("well_middle", "well_middle_diffuse", "well_middle_normal", "well_middle_specular", loader);
+        TexturedModel well_lower = getNormalModel("well_lower", "well_lower_diffuse", "well_lower_normal", "well_lower_specular", loader);
 
-        RawModel wallData = NormalMappedObjLoader.loadOBJ("wall", loader);
-        TexturedModel wall = new TexturedModel(wallData, new ModelTexture(loader.loadTexture("wall_disp")));
-        wall.getTexture().setNormalMap(loader.loadTexture("1_NORMAL"));
+        TexturedModel wall = getNormalModel("wall", "wall_disp", "wall_norm", "wall_spec", loader);
+        addWalls(entities, wall);
 
         RawModel barrelData = NormalMappedObjLoader.loadOBJ("barrel", loader);
         ModelTexture barrelTexture = new ModelTexture(loader.loadTexture("barrel"));
@@ -90,13 +95,8 @@ public class MainLoop
         fern.getTexture().setHasTransparency(true);
         fern.getTexture().setUseFakeLighting(true);
 
+        TexturedModel fire_pit = getModel("fire_pit", "fire_pit_diffuse", loader);
 
-        List<Entity> entities = new ArrayList<>();
-        List<Entity> normalEntities = new ArrayList<>();
-        Terrain[][] terrains = new Terrain[1][1];
-        List<GuiTexture> guis = new ArrayList<>();
-        List<Light> lights = new ArrayList<>();
-        Random random = new Random();
 
 //        int n = 4;
 //        for(int i = 0; i < n; i++)
@@ -107,55 +107,50 @@ public class MainLoop
 //                terrains[i][j] = terrain;
 //            }
 //        }
-        terrains[0][0] = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap");
+        terrains[0][0] = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap2");
 
-        for(int i = 0; i < 2048; i++)
-        {
-            float x = random.nextFloat() * 2048;
-            float z = random.nextFloat() * 2048;
-            entities.add(new Entity(tree, new Vector3f(x, getTerrain(x, z, terrains)
-                    .getHeightOfTerrain(x, z), z), 0, 0, 0, 10, 50));
-            x = random.nextFloat() * 2048;
-            z = random.nextFloat() * 2048;
-            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, getTerrain(x, z, terrains)
-                    .getHeightOfTerrain(x, z), z), 0, 0, 0, 1));
-        }
+//        for(int i = 0; i < 2048; i++)
+//        {
+//            float x = random.nextFloat() * 2048;
+//            float z = random.nextFloat() * 2048;
+//            entities.add(new Entity(tree, new Vector3f(x, getTerrain(x, z, terrains)
+//                    .getHeightOfTerrain(x, z), z), 0, 0, 0, 10, 50));
+//            x = random.nextFloat() * 2048;
+//            z = random.nextFloat() * 2048;
+//            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, getTerrain(x, z, terrains)
+//                    .getHeightOfTerrain(x, z), z), 0, 0, 0, 1));
+//        }
+
+        TexturedModel house = getNormalModel("Medieval_House", "Medieval_House_Diff", "Medieval_House_Nor", "Medieval_House_Spec_Red", loader);
+
+        normalEntities.add(new Entity(house, new Vector3f(1281, getTerrainHeight(1281, 739, terrains), 739), 0, -304, 0, 0.2f, 100));
+        normalEntities.add(new Entity(house, new Vector3f(1457, getTerrainHeight(1457, 608, terrains), 608), 0, 0, 0, 0.2f, 100));
+        normalEntities.add(new Entity(house, new Vector3f(1287, getTerrainHeight(1287, 577, terrains), 577), 0, -258, 0, 0.2f, 100));
+        normalEntities.add(new Entity(house, new Vector3f(1421, getTerrainHeight(1421, 357, terrains), 357), 0, -407, 0, 0.2f, 100));
 
 
-
-        for(int i = 0; i < 32; i++)
-        {
-            normalEntities.add(new Entity(wall, new Vector3f(-32, -50, 32 + 64 * i), 0, 0, 0, 32, 1));
-            normalEntities.add(new Entity(wall, new Vector3f(32 + 64 * i, -50, -32), 0, 0, 0, 32, 1));
-            normalEntities.add(new Entity(wall, new Vector3f(2080, -50, 32 + 64 * i), 0, 0, 0, 32, 1));
-            normalEntities.add(new Entity(wall, new Vector3f(32 + 64 * i, -50, 2080), 0, 0, 0, 32, 1));
-        }
-
-        RawModel houseData = NormalMappedObjLoader.loadOBJ("Medieval_House", loader);
-        ModelTexture houseTexture = new ModelTexture(loader.loadTexture("Medieval_House_Diff"));
-        TexturedModel houseModel = new TexturedModel(houseData, houseTexture);
-        barrelModel.getTexture().setShineDamper(10);
-        barrelModel.getTexture().setReflectivity(0.5f);
-        barrelModel.getTexture().setNormalMap(loader.loadTexture("Medieval_House_Nor"));
-        barrelModel.getTexture().setSpecularMap(loader.loadTexture("Medieval_House_Spec_Red"));
-
-        normalEntities.add(new Entity(houseModel, new Vector3f(1300, getTerrain(1300, 500,
-                terrains).getHeightOfTerrain(1300, 500), 500), 0, 0, 0, 0.2f, 100));
-
-        Light sunLight = new Light(new Vector3f(sunX, sunY, sunZ), new Vector3f(1f, 1f, 1f));
+        Light sunLight = new Light(new Vector3f(sunX, sunY, sunZ), new Vector3f(0, 0, 0));
         lights.add(sunLight);
+        int x = 1262;
+        int z = 455;
+        Player player = new Player(person, new Vector3f(x, terrains[0][0].getHeightOfTerrain(x, z),z), 0, 45, 0, 1);
+        x += 20;
+        z -= 3;
 
-        Player player = new Player(person, new Vector3f(1300, terrains[0][0].getHeightOfTerrain(1300, 500),500), 0, 45, 0, 1);
+        new Lamp(entities, lights, loader, terrains, 1426, 450);
+        new Well(well_roof, well_middle, well_lower, entities, new Vector3f(1260, terrains[0][0].getHeightOfTerrain(1260, 510),510));
+        entities.add(new Entity(fire_pit, new Vector3f(x, getTerrainHeight(x, z, terrains), z), 0, 0, 0, 5, 1));
+        entities.add(new Entity(getModel("bridge", "bridge_diffuse", loader), new Vector3f(1377, -64, 1241), 0, 60, 0, 10, 1));
+        lights.add(new Light(new Vector3f(x, getTerrainHeight(x, z, terrains) + 20, z), new Vector3f(1, 1, 1), new Vector3f(1, 0.001f, 0.00002f)));
+
         Camera camera = new Camera(player);
         MasterRenderer renderer = new MasterRenderer(loader, sunLight, camera);
-        new Lamp(entities, lights, loader, terrains, 200, 200);
-      //  Sun sun = new Sun(loader, new Vector3f(sunX/1000f, sunY/1000f, sunZ/1000f), 0, 20, renderer.getProjectionMatrix());
+        //  Sun sun = new Sun(loader, new Vector3f(sunX/1000f, sunY/1000f, sunZ/1000f), 0, 20, renderer.getProjectionMatrix());
 
         new GuiTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
         GuiTexture gui = new GuiTexture(loader.loadTexture("health"), new Vector2f(-0.75f, -0.75f), new Vector2f(0.15f, 0.25f));
         guis.add(gui);
         GuiRenderer guiRenderer = new GuiRenderer(loader);
-        entities.add(player);
 
         MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrains);
         Mouse.setGrabbed(true);
@@ -167,8 +162,11 @@ public class MainLoop
         waterTiles.add(new WaterTile(1024, 1024, SEA_LEVEL));
 
         ParticleMaster.init(loader, renderer.getProjectionMatrix());
-        ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("particleAtlas"), 4, true);
-        ParticleSystem system = new ParticleSystem(particleTexture, 80, 10, 0.1f, 1, 1.6f);
+        ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("fire"), 8, true);
+        ParticleSystem system = new ParticleSystem(particleTexture, 160, 3, -0.1f, 1, 5f);
+
+        List<Entity> entitiesWithoutPlayer = List.copyOf(entities);
+        entities.add(player);
 
         while (!Display.isCloseRequested())
         {
@@ -176,13 +174,13 @@ public class MainLoop
             camera.move();
             player.move(getTerrain(player.getPosition().x, player.getPosition().z, terrains));
             //player.checkCollisions(entities);
-           // moveSun(sunLight, sun, player);
+            //moveSun(sunLight, sun, player);
 
             ParticleMaster.update(camera);
 
             renderer.renderShadowMap(entities, normalEntities, sunLight);
 
-            system.generateParticles(new Vector3f(50, 20, 50));
+            system.generateParticles(new Vector3f(x, getTerrainHeight(x, z, terrains), z));
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
@@ -203,8 +201,8 @@ public class MainLoop
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
 
-            renderer.renderScene(entities, normalEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0)
-                                                                                   , new Vector4f(0, 0, -1, player.getPosition().z + 500));
+            renderer.renderScene(entitiesWithoutPlayer, normalEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0)
+                                                                                   , new Vector4f(0, 0, 0, 0));
             waterRenderer.render(waterTiles, camera, lights);
 
             ParticleMaster.renderParticles(camera);
@@ -213,20 +211,7 @@ public class MainLoop
             guiRenderer.render(guis);
 
             DisplayManager.updateDisplay();
-            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
-            {
-                if(!pressed)
-                {
-                    grabMouse(!current);
-                    Player.escPressed = current;
-                    current = !current;
-                    pressed = true;
-                }
-            }
-            else
-            {
-                pressed = false;
-            }
+            checkInputs();
         }
 
         fbos.cleanUp();
@@ -238,7 +223,45 @@ public class MainLoop
 
     }
 
-    public static void grabMouse(boolean next)
+    private static void checkInputs()
+    {
+        if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
+        {
+            if(!pressed)
+            {
+                grabMouse(!current);
+                Player.escPressed = current;
+                current = !current;
+                pressed = true;
+            }
+        }
+        else
+        {
+            pressed = false;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_F2)) {
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
+    }
+
+    private static void addWalls(List<Entity> normalEntities, TexturedModel wall)
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            normalEntities.add(new Entity(wall, new Vector3f(-64, -20, 64 + 128 * i), 0, 0, 0, 64, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(64 + 128 * i, -20, -64), 0, 0, 0, 64, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(2112, -20, 64 + 128 * i), 0, 0, 0, 64, 1));
+            normalEntities.add(new Entity(wall, new Vector3f(64 + 128 * i, -20, 2112), 0, 0, 0, 64, 1));
+        }
+    }
+
+    private static void grabMouse(boolean next)
     {
         Mouse.setGrabbed(next);
     }
@@ -246,6 +269,12 @@ public class MainLoop
     public static Terrain getTerrain(float x, float z, Terrain[][] terrains)
     {
         return terrains[Math.max(0, (int) Math.floor(x / Terrain.getSize()))][Math.max(0, (int) Math.floor(z / Terrain.getSize()))];
+    }
+
+    public static float getTerrainHeight(float x, float z, Terrain[][] terrains)
+    {
+        return terrains[Math.max(0, (int) Math.floor(x / Terrain.getSize()))][Math.max(0, (int) Math.floor(z / Terrain.getSize()))]
+                .getHeightOfTerrain(x, z);
     }
 
     private static void moveSun(Light sunLight, Sun sun, Player player)
@@ -272,6 +301,24 @@ public class MainLoop
         {
             blendFactor = (time - 21000)/(24000 - 21000);
         }
+    }
+
+    private static TexturedModel getModel(String obj, String texture, Loader loader)
+    {
+        ModelData data = OBJLoader.loadOBJ(obj);
+        RawModel model = loader.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
+
+        return new TexturedModel(model, new ModelTexture(loader.loadTexture(texture)));
+    }
+
+    private static TexturedModel getNormalModel(String obj, String texture, String normal, String specular, Loader loader)
+    {
+        RawModel model = NormalMappedObjLoader.loadOBJ(obj, loader);
+        TexturedModel texturedModel = new TexturedModel(model, new ModelTexture(loader.loadTexture(texture)));
+        texturedModel.getTexture().setSpecularMap(loader.loadTexture(specular));
+        texturedModel.getTexture().setNormalMap(loader.loadTexture(normal));
+
+        return texturedModel;
     }
 
 }

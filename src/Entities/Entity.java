@@ -53,6 +53,23 @@ public class Entity
         this.position.x += dx;
         this.position.y += dy;
         this.position.z += dz;
+        if(this.position.x < 2)
+        {
+            this.position.x = 2;
+        }
+        if(this.position.z < 2)
+        {
+            this.position.z = 2;
+        }
+        if(this.position.x > 2046)
+        {
+            this.position.x = 2046;
+        }
+        if(this.position.z > 2046)
+        {
+            this.position.z = 2046;
+        }
+
     }
 
     public void changeRotation(float dx, float dy, float dz)
