@@ -72,6 +72,6 @@ void main(void) {
 
 	out_Color = mix(reflectColor, refractColor, refractiveFactor);
 	out_Color = mix(out_Color, vec4(0.0, 0.3, 0.5, 1.0), 0.2) + vec4(specularHighlights, 0.0);
-	out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
+	//out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
     out_Color.a = clamp(waterDepth / 5.0, 0.0, 1.0);
 }

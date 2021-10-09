@@ -9,6 +9,7 @@ import Shaders.StaticShader;
 import Shaders.TerrainShader;
 import Shadows.ShadowMapMasterRenderer;
 import Skybox.SkyboxRenderer;
+import Sun.Sun;
 import Terrains.Terrain;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -26,7 +27,7 @@ public class MasterRenderer
 
     public static final float FOV = 70;
     public static final float NEAR_PLANE = 0.1f;
-    public static final float FAR_PLANE = 3000;
+    public static final float FAR_PLANE = 10000;
 
     public static float RED = 0.5444f;
     public static float GREEN = 0.62f;
@@ -58,6 +59,11 @@ public class MasterRenderer
         this.shadowMapMasterRenderer = new ShadowMapMasterRenderer(camera);
     }
 
+    public void setSun(Sun sun)
+    {
+        skyboxRenderer.setSun(sun);
+    }
+
     public static void enableCulling()
     {
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -65,10 +71,12 @@ public class MasterRenderer
     }
 
     public void renderShadowMap(List<Entity> entityList, List<Entity> normalMappedEntities, Light sun){
-        for(Entity entity : entityList){
+        for(Entity entity : entityList)
+        {
             processEntity(entity);
         }
-        for(Entity entity : normalMappedEntities){
+        for(Entity entity : normalMappedEntities)
+        {
             processEntity(entity);
         }
         shadowMapMasterRenderer.render(normalMapEntities, sun);
@@ -87,16 +95,10 @@ public class MasterRenderer
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain[][] terrains, List<Light> lights, Camera camera,
+    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain terrain, List<Light> lights, Camera camera,
                                                     Vector4f clipPlane1, Vector4f clipPlane2)
     {
-        for (Terrain[] terrainArray : terrains)
-        {
-            for (Terrain terrain : terrainArray)
-            {
-                processTerrain(terrain);
-            }
-        }
+        processTerrain(terrain);
         for(Entity entity : entities)
         {
             processEntity(entity);

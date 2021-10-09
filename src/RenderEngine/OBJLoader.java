@@ -10,12 +10,12 @@ import java.util.List;
 public class OBJLoader
 {
 	
-	private static final String RES_LOC = "obj/";
+	private static final String OBJ_LOC = "obj/";
 
 	public static ModelData loadOBJ(String objFileName)
 	{
 		FileReader isr = null;
-		File objFile = new File(RES_LOC + objFileName + ".obj");
+		File objFile = new File(OBJ_LOC + objFileName + ".obj");
 		try
 		{
 			isr = new FileReader(objFile);

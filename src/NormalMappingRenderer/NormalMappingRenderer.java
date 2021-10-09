@@ -57,7 +57,6 @@ public class NormalMappingRenderer {
 		GL20.glEnableVertexAttribArray(2);
 		GL20.glEnableVertexAttribArray(3);
 		ModelTexture texture = model.getTexture();
-		shader.loadNumberOfRows(texture.getNumberOfRows());
 		if (texture.getHasTransparency()) {
 			MasterRenderer.disableCulling();
 		}
@@ -81,7 +80,6 @@ public class NormalMappingRenderer {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRx(),
 				entity.getRy(), entity.getRz(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
-		shader.loadOffset(entity.getXOffset(), entity.getYOffset());
 	}
 
 	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {

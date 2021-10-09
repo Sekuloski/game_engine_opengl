@@ -15,8 +15,6 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition[8];
 uniform float useFakeLighting;
-uniform float numberOfRows;
-uniform vec2 offset;
 uniform vec4 plane1;
 uniform vec4 plane2;
 uniform vec4 plane3;
@@ -33,8 +31,7 @@ void main(void)
 
     vec4 positionRelativeToCamera = viewMatrix * worldPosition;
     gl_Position = projectionMatrix * positionRelativeToCamera;
-    outTextureCoords = (textureCoords / numberOfRows) + offset;
-
+    outTextureCoords = textureCoords;
 
     vec3 actualNormal = normal;
     if(useFakeLighting > 0.5)

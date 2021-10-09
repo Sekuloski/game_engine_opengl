@@ -4,7 +4,6 @@ import Entities.Camera;
 import Entities.Light;
 import ToolBox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -28,8 +27,6 @@ public class StaticShader extends ShaderProgram
     private int refl_location;
     private int fakeLighting_location;
     private int skyColor_location;
-    private int numberOfRows_location;
-    private int offset_location;
     private int plane1_location;
     private int plane2_location;
     private int specularMap_location;
@@ -59,8 +56,6 @@ public class StaticShader extends ShaderProgram
         refl_location = super.getUniformLocation("reflectivity");
         fakeLighting_location = super.getUniformLocation("useFakeLighting");
         skyColor_location = super.getUniformLocation("skyColor");
-        numberOfRows_location = super.getUniformLocation("numberOfRows");
-        offset_location = super.getUniformLocation("offset");
         plane1_location = super.getUniformLocation("plane1");
         plane2_location = super.getUniformLocation("plane2");
         specularMap_location = super.getUniformLocation("specularMap");
@@ -94,16 +89,6 @@ public class StaticShader extends ShaderProgram
     public void loadUseSpecularMap(boolean useMap)
     {
         super.loadBoolean(usesSpecular_location, useMap);
-    }
-
-    public void loadNumberOfRows(int numberOfRows)
-    {
-        super.loadFloat(numberOfRows_location, numberOfRows);
-    }
-
-    public void loadOffset(float x, float y)
-    {
-        super.load2DVector(offset_location, new Vector2f(x, y));
     }
 
     public void loadSkyColor(float r, float g, float b)

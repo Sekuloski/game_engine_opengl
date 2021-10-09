@@ -43,7 +43,7 @@ public class Camera
     {
        // calculateAngle();
         checkInputs();
-        if(!Player.escPressed)
+        //if(!Player.escPressed)
         {
             if(detached)
             {

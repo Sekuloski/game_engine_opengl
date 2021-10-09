@@ -15,9 +15,6 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPositionEyeSpace[4];
 
-uniform float numberOfRows;
-uniform vec2 offset;
-
 const float density = 0.0035;
 const float gradient = 10.0;
 
@@ -32,7 +29,7 @@ void main(void)
 	vec4 positionRelativeToCam = modelViewMatrix * vec4(position,1.0);
 	gl_Position = projectionMatrix * positionRelativeToCam;
 	
-	pass_textureCoordinates = (textureCoordinates/numberOfRows) + offset;
+	pass_textureCoordinates = textureCoordinates;
 	
 	vec3 surfaceNormal = (modelViewMatrix * vec4(normal,0.0)).xyz;
 

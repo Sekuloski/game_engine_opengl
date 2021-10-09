@@ -50,7 +50,7 @@ public class Player extends Entity
                 flag = true;
             }
             checkInputs();
-            if(!escPressed)
+            //if(!escPressed)
             {
                 super.changeRotation(0, -MainLoop.DX, 0);
             }
@@ -86,7 +86,7 @@ public class Player extends Entity
                 lastRZ = getRz();
                 flag = false;
             }
-            if(!escPressed)
+            //if(!escPressed)
             {
                 super.changeRotation(0, -MainLoop.DX, 0);
             }

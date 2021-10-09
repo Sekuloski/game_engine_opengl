@@ -22,7 +22,7 @@ const float gradient = 5.0;
 
 void main(void)
 {
-    vec4 worldPosition = vec4(position.x, 0.0, position.y, 1.0);
+    vec4 worldPosition = modelMatrix * vec4(position.x, 0.0, position.y, 1.0);
     clipSpace = projectionMatrix * viewMatrix * worldPosition;
     vec4 positionRelativeToCamera = viewMatrix * worldPosition;
 	gl_Position = clipSpace;

@@ -1,6 +1,7 @@
 package Skybox;
 
 import Entities.Camera;
+import RenderEngine.DisplayManager;
 import Shaders.ShaderProgram;
 import ToolBox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
@@ -35,7 +36,7 @@ public class SkyboxShader extends ShaderProgram{
         matrix.m30 = 0;
         matrix.m31 = 0;
         matrix.m32 = 0;
-        //rotaion += ROTATE_SPEED * DisplayManager.getDelta();
+        rotaion += ROTATE_SPEED * DisplayManager.getDelta();
         Matrix4f.rotate((float) Math.toRadians(rotaion), new Vector3f(0, 1, 0), matrix, matrix);
         super.loadMatrix(location_viewMatrix, matrix);
     }

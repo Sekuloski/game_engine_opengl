@@ -3,7 +3,6 @@ package NormalMappingRenderer;
 import Entities.Light;
 import Shaders.ShaderProgram;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -26,8 +25,6 @@ public class NormalMappingShader extends ShaderProgram
 	private int location_shineDamper;
 	private int location_reflectivity;
 	private int location_skyColour;
-	private int location_numberOfRows;
-	private int location_offset;
 	private int location_plane;
 	private int location_modelTexture;
 	private int normalMap_location;
@@ -52,8 +49,6 @@ public class NormalMappingShader extends ShaderProgram
 		location_shineDamper = super.getUniformLocation("shineDamper");
 		location_reflectivity = super.getUniformLocation("reflectivity");
 		location_skyColour = super.getUniformLocation("skyColour");
-		location_numberOfRows = super.getUniformLocation("numberOfRows");
-		location_offset = super.getUniformLocation("offset");
 		location_plane = super.getUniformLocation("plane");
 		location_modelTexture = super.getUniformLocation("modelTexture");
 		normalMap_location = super.getUniformLocation("normalMap");
@@ -80,16 +75,6 @@ public class NormalMappingShader extends ShaderProgram
 	protected void loadClipPlane(Vector4f plane)
 	{
 		super.loadVector(location_plane, plane);
-	}
-	
-	protected void loadNumberOfRows(int numberOfRows)
-	{
-		super.loadFloat(location_numberOfRows, numberOfRows);
-	}
-	
-	protected void loadOffset(float x, float y)
-	{
-		super.load2DVector(location_offset, new Vector2f(x,y));
 	}
 	
 	protected void loadSkyColour(float r, float g, float b)

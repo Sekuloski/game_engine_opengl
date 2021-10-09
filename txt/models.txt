@@ -1,0 +1,7 @@
+N,well_roof,well_roof,well_roof_diffuse,well_roof_normal,well_roof_specular,loader,well_roof
+N,well_middle,well_middle,well_middle_diffuse,well_middle_normal,well_middle_specular,loader,well_middle
+N,well_lower,well_lower,well_lower_diffuse,well_lower_normal,well_lower_specular,loader,well_lower
+N,wall,wall,wall_disp,wall_norm,wall_spec,loader,wall
+N,house,Medieval_House,Medieval_House_Diff,Medieval_House_Nor,Medieval_House_Spec_Red,loader,house
+F,fire_pit,fire_pit,fire_pit_diffuse,fire_pit
+F,bridge,bridge,bridge_diffuse,bridge
