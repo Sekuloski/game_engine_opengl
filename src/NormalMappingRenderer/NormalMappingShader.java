@@ -11,7 +11,7 @@ import java.util.List;
 public class NormalMappingShader extends ShaderProgram
 {
 	
-	private static final int MAX_LIGHTS = 4;
+	private static final int MAX_LIGHTS = 64;
 	
 	private static final String VERTEX_FILE = "src/NormalMappingRenderer/normalMapVShader.glsl";
 	private static final String FRAGMENT_FILE = "src/NormalMappingRenderer/normalMapFShader.glsl";

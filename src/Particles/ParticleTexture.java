@@ -3,9 +3,9 @@ package Particles;
 public class ParticleTexture
 {
 
-    private int textureID;
-    private int numberOfRows;
-    private boolean additive;
+    private final int textureID;
+    private final int numberOfRows;
+    private final boolean additive;
 
     public ParticleTexture(int textureID, int numberOfRows, boolean additive)
     {

@@ -77,7 +77,7 @@ public class SkyboxRenderer
     private final int texture;
     private final int nightTexture;
     private final SkyboxShader shader;
-    private float time = 5040;
+    private float time = 0;
     private final Light light;
     private Sun sun;
 
@@ -116,7 +116,7 @@ public class SkyboxRenderer
 
     private void bindTextures()
     {
-        time += DisplayManager.getDelta() * 500;
+        time += DisplayManager.getDelta();
         time %= 23760;
         float angle;
         int texture1;
@@ -145,12 +145,12 @@ public class SkyboxRenderer
             MasterRenderer.BLUE = blendFactor * BLUE;
             light.setColor(new Vector3f(blendFactor, blendFactor, blendFactor));
         }
-        else if (time >= 9000 && time < 20970)
+        else if (time >= 9000 && time < 19800)
         {
-            angle = 45 + (time - 9000) / 133;
+            angle = 45 + (time - 9000) / 120;
             texture1 = texture;
             texture2 = texture;
-            blendFactor = (time - 9000)/(20970 - 9000);
+            blendFactor = (time - 9000)/(19800 - 9000);
             MasterRenderer.RED = RED;
             MasterRenderer.GREEN = GREEN;
             MasterRenderer.BLUE = BLUE;
@@ -158,10 +158,10 @@ public class SkyboxRenderer
         }
         else
         {
-            angle = 135 + (time - 20970) / 62;
+            angle = 135 + (time - 19800) / 88;
             texture1 = texture;
             texture2 = nightTexture;
-            blendFactor = (time - 21000)/(24000 - 21000);
+            blendFactor = (time - 19800)/(23760 - 19800);
             MasterRenderer.RED = RED - blendFactor * RED;
             MasterRenderer.GREEN = GREEN - blendFactor * GREEN;
             MasterRenderer.BLUE = BLUE - blendFactor * BLUE;
@@ -169,9 +169,7 @@ public class SkyboxRenderer
         }
 
         light.setPosition(new Vector3f(sunX, sunY * (float) Math.sin(Math.toRadians(angle)), sunZ * (float) Math.cos(Math.toRadians(angle))));
-        sun.setPosition(new Vector3f(1262, sunY / 97.65625f * (float) Math.sin(Math.toRadians(angle)), sunZ / 97.65625f * (float) Math.cos(Math.toRadians(angle))));
-
-        System.out.println(light.getPosition().toString() + " " + sun.getPosition().toString());
+        sun.setPosition(new Vector3f(3072, sunY / 80f * (float) Math.sin(Math.toRadians(angle)), sunZ / 80f * (float) Math.cos(Math.toRadians(angle))));
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texture1);

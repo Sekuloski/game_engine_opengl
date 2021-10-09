@@ -209,14 +209,6 @@ public class Player extends Entity
             RUN_SPEED = 50;
         }
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_P))
-        {
-            System.out.println(getPosition().toString() + " " + getRy());
-        }
-//        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-//        {
-//            //position.y -= 0.2;
-//        }
     }
 
 }

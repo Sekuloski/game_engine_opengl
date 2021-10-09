@@ -33,6 +33,8 @@ public class MasterRenderer
     public static float GREEN = 0.62f;
     public static float BLUE = 0.69f;
 
+    public static boolean fogOn = false;
+
     private Matrix4f projectionMatrix;
 
     private final StaticShader shader = new StaticShader();
@@ -118,6 +120,7 @@ public class MasterRenderer
         shader.loadSkyColor(RED, GREEN, BLUE);
         shader.loadLights(lights);
         shader.loadViewMatrix(camera);
+        shader.loadFogBoolean(fogOn);
         renderer.render(entities);
         shader.stop();
         normalMappingRenderer.render(normalMapEntities, clipPlane1, lights, camera);

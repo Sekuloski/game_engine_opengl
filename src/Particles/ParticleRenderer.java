@@ -22,11 +22,11 @@ public class ParticleRenderer
 
 	private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(MAX_INSTANCES * INSTANCE_DATA_LENGTH);
 
-	private RawModel quad;
-	private ParticleShader shader;
+	private final RawModel quad;
+	private final ParticleShader shader;
 
-	private Loader loader;
-	private int vbo;
+	private final Loader loader;
+	private final int vbo;
 	private int pointer = 0;
 
 	protected ParticleRenderer(Loader loader, Matrix4f projectionMatrix)

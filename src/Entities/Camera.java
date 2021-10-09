@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Camera
 {
-    private static final float RUN_SPEED = 100;
+    private static float RUN_SPEED = 100;
 
     private float currentSpeed = 0;
     private float currentTurnSpeed = 0;
@@ -32,7 +32,7 @@ public class Camera
     private boolean flying = false;
     private boolean falling = false;
 
-    private Player player;
+    private final Player player;
 
     public Camera(Player player)
     {
@@ -127,6 +127,15 @@ public class Camera
             this.currentTurnSpeed = 0;
         }
 
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        {
+            RUN_SPEED = 400;
+        }
+        else
+        {
+            RUN_SPEED = 100;
+        }
+
         if (!falling && Keyboard.isKeyDown(Keyboard.KEY_SPACE))
         {
             flying = true;
@@ -138,7 +147,7 @@ public class Camera
             this.currentFlySpeed = 0;
         }
 
-        if (!flying && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        if (!flying && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
             falling = true;
             this.currentFlySpeed = -RUN_SPEED;
@@ -149,17 +158,20 @@ public class Camera
             this.currentFlySpeed = 0;
         }
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_O))
+        if(MainLoop.dev)
         {
-            if(flag)
+            if(Keyboard.isKeyDown(Keyboard.KEY_O))
             {
-                detached = !detached;
+                if(flag)
+                {
+                    detached = !detached;
+                }
+                flag = false;
             }
-            flag = false;
-        }
-        else
-        {
-            flag = true;
+            else
+            {
+                flag = true;
+            }
         }
 
     }

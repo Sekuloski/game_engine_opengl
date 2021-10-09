@@ -32,6 +32,7 @@ public class StaticShader extends ShaderProgram
     private int specularMap_location;
     private int usesSpecular_location;
     private int textureSampler_location;
+    private int fogOn_location;
 
     public StaticShader()
     {
@@ -61,6 +62,7 @@ public class StaticShader extends ShaderProgram
         specularMap_location = super.getUniformLocation("specularMap");
         usesSpecular_location = super.getUniformLocation("usesSpecularMap");
         textureSampler_location = super.getUniformLocation("textureSampler");
+        fogOn_location = super.getUniformLocation("fogOn");
 
         lightColor_location = new int[MAX_LIGHTS];
         lightPosition_location = new int[MAX_LIGHTS];
@@ -84,6 +86,11 @@ public class StaticShader extends ShaderProgram
     {
         super.loadInt(textureSampler_location, 0);
         super.loadInt(specularMap_location, 1);
+    }
+
+    public void loadFogBoolean(boolean fogOn)
+    {
+        super.loadBoolean(fogOn_location, fogOn);
     }
 
     public void loadUseSpecularMap(boolean useMap)

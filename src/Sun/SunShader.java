@@ -28,6 +28,7 @@ public class SunShader extends ShaderProgram
     protected void bindAttributes()
     {
         super.bindAttribute(0, "position");
+        super.bindAttribute(1, "textureCoords");
     }
 
     protected void loadModelViewMatrix(Matrix4f modelView)

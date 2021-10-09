@@ -19,7 +19,7 @@ public class Lamp
         streetLight.getTexture().setUseFakeLighting(true);
 
         entities.add(new Entity(streetLight, new Vector3f(x, terrain.getHeightOfTerrain(x, z), z), 0, 180, 0, 10f, 5));
-        lights.add(new Light(new Vector3f(x - 3.5f , terrain.getHeightOfTerrain(x - 3.5f, z) + 31, z), new Vector3f(2, 2, 2), new Vector3f(1, 0.01f, 0.002f)));
+
     }
 
     public TexturedModel getModel(Loader loader)
