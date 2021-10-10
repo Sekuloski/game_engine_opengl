@@ -9,8 +9,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class SkyboxShader extends ShaderProgram{
 
-    private static final String VERTEX_FILE = "src/Skybox/skyboxVertexShader.glsl";
-    private static final String FRAGMENT_FILE = "src/Skybox/skyboxFragmentShader.glsl";
+    private static final String VERTEX_FILE = "Skybox/skyboxVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "Skybox/skyboxFragmentShader.glsl";
 
     private static final float ROTATE_SPEED = 1.0f;
 

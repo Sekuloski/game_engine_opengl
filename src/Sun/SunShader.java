@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Matrix4f;
 public class SunShader extends ShaderProgram
 {
 
-    private static final String VERTEX_FILE = "src/sun/sunVShader.glsl";
-    private static final String FRAGMENT_FILE = "src/sun/sunFShader.glsl";
+    private static final String VERTEX_FILE = "sun/sunVShader.glsl";
+    private static final String FRAGMENT_FILE = "sun/sunFShader.glsl";
 
     private int modelViewMatrix_location;
     private int projectionMatrix_location;

@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Matrix4f;
 public class ParticleShader extends ShaderProgram
 {
 
-	private static final String VERTEX_FILE = "src/particles/particleVShader.glsl";
-	private static final String FRAGMENT_FILE = "src/particles/particleFShader.glsl";
+	private static final String VERTEX_FILE = "particles/particleVShader.glsl";
+	private static final String FRAGMENT_FILE = "particles/particleFShader.glsl";
 
 	private int numberOfRows_location;
 	private int location_projectionMatrix;

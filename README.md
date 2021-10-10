@@ -76,9 +76,9 @@ All the prerequisites are already installed and are located in the [libs](libs) 
 To run the project, simply run the main method of the *[MainLoop](src/Engine_Tester/MainLoop.java)* class and the demo project will run.
 In the project there a few files that store the list of entities, models and lights, and they are already filled with some data. To alter them, there is an if segment in the main method in the while loop, that is currently commented. After uncommenting it and running the
 main method, by pressing the right mouse button you can spawn the currently set *entityModel* (to set the entityModel, simply go the top of the class and
-write the name of the model which can be found in the [models](txt/models.txt) file). After spawning the entity
+write the name of the model which can be found in the [models](src/txt/models.txt) file). After spawning the entity
 you can move it by moving the player using the WASD keys and the entity will always be at the center of the screen.
-To place the object just place the left mouse button. This entity will then be stored in the [entities](txt/entities.txt) file which stores all the entities.
+To place the object just place the left mouse button. This entity will then be stored in the [entities](src/txt/entities.txt) file which stores all the entities.
 
 To quit the game, press the del key.
 
@@ -103,9 +103,9 @@ See the [open issues](https://github.com/sekuloski/game_engine_opengl/tree/compu
 ## Contributing
 
 If you have a suggestion that would make this better or want to create a map of your own, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Entities, models and lights are stored in the [txt](txt) folder.
-Textures are stored in the [res](res) folder.
-Objects are stored in the [obj](obj) folder. Make sure to export obj files with triangulated faces otherwise the loader will fail to open them.
+Entities, models and lights are stored in the [txt](src/txt) folder.
+Textures are stored in the [res](resources/res) folder.
+Objects are stored in the [obj](resources/obj) folder. Make sure to export obj files with triangulated faces otherwise the loader will fail to open them.
 The terrain is created using a heightmap which you can modify or create a new one.
 
 1. Fork the Project

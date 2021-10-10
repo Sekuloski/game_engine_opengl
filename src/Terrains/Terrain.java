@@ -10,8 +10,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Terrain
 {
@@ -63,7 +63,7 @@ public class Terrain
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(new File("res/" + heightMap + ".png"));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/res/" + heightMap + ".png")));
         } catch (IOException e)
         {
             e.printStackTrace();

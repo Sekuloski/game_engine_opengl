@@ -12,17 +12,9 @@ public class OBJLoader
 
 	public static ModelData loadOBJ(String objFileName)
 	{
-		FileReader isr = null;
-		try
-		{
-			isr = new FileReader(new File("obj/" + objFileName + ".obj"));
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		assert isr != null;
-		BufferedReader reader = new BufferedReader(isr);
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream is = classloader.getResourceAsStream("obj/" + objFileName + ".obj");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String line;
 		List<Vertex> vertices = new ArrayList<>();
 		List<Vector2f> textures = new ArrayList<>();

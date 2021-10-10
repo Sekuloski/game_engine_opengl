@@ -49,7 +49,7 @@ public class MainLoop
     private static boolean UPPressed = false;
     private static boolean DOWNPressed = false;
     private static boolean created = false;
-    private static boolean fullscreen = false;
+    private static boolean fullscreen = true;
     public static boolean dev = true;
     private static final int x = 1262;
     private static final int z = 455;
@@ -250,33 +250,6 @@ public class MainLoop
 
     }
 
-    private static void setParticlePositions()
-    {
-        try
-        {
-            try (BufferedReader br = new BufferedReader(new FileReader(PARTICLE_SOURCE)))
-            {
-                String line;
-                while ((line = br.readLine()) != null)
-                {
-                    String[] parts = line.split(",");
-                    if(parts[0].equals("fire"))
-                    {
-                        firePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                    }
-                    else
-                    {
-                        smokePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                    }
-                }
-
-            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     private static void checkInputs()
     {
         if(dev)
@@ -426,11 +399,42 @@ public class MainLoop
 
     }
 
+    private static void setParticlePositions()
+    {
+        try
+        {
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream is = classloader.getResourceAsStream(PARTICLE_SOURCE);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
+            {
+                String line;
+                while ((line = br.readLine()) != null)
+                {
+                    String[] parts = line.split(",");
+                    if(parts[0].equals("fire"))
+                    {
+                        firePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+                    }
+                    else
+                    {
+                        smokePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+                    }
+                }
+
+            }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private static void loadEntities() throws FileNotFoundException
     {
         try
         {
-            try (BufferedReader br = new BufferedReader(new FileReader(ENTITY_SOURCE)))
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream is = classloader.getResourceAsStream(ENTITY_SOURCE);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -470,7 +474,9 @@ public class MainLoop
     {
         try
         {
-            try (BufferedReader br = new BufferedReader(new FileReader(MODELS_SOURCE)))
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream is = classloader.getResourceAsStream(MODELS_SOURCE);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -511,7 +517,9 @@ public class MainLoop
     {
         try
         {
-            try (BufferedReader br = new BufferedReader(new FileReader(LIGHTS_SOURCE)))
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream is = classloader.getResourceAsStream(LIGHTS_SOURCE);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
             {
                 String line;
                 while ((line = br.readLine()) != null)

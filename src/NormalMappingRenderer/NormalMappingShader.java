@@ -13,8 +13,8 @@ public class NormalMappingShader extends ShaderProgram
 	
 	private static final int MAX_LIGHTS = 64;
 	
-	private static final String VERTEX_FILE = "src/NormalMappingRenderer/normalMapVShader.glsl";
-	private static final String FRAGMENT_FILE = "src/NormalMappingRenderer/normalMapFShader.glsl";
+	private static final String VERTEX_FILE = "NormalMappingRenderer/normalMapVShader.glsl";
+	private static final String FRAGMENT_FILE = "NormalMappingRenderer/normalMapFShader.glsl";
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;

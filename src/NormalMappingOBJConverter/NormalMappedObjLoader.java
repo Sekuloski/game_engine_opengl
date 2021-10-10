@@ -14,15 +14,10 @@ public class NormalMappedObjLoader {
 	private static final String OBJ_LOC = "obj/";
 
 	public static RawModel loadOBJ(String objFileName, Loader loader) {
-		FileReader isr = null;
-		File objFile = new File(OBJ_LOC + objFileName + ".obj");
-		try {
-			isr = new FileReader(objFile);
-		} catch (FileNotFoundException e) {
-			System.err.println("File not found in res; don't use any extention");
-		}
-		assert isr != null;
-		BufferedReader reader = new BufferedReader(isr);
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream is = classloader.getResourceAsStream(OBJ_LOC + objFileName + ".obj");
+		assert is != null;
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String line;
 		List<VertexNM> vertices = new ArrayList<>();
 		List<Vector2f> textures = new ArrayList<>();

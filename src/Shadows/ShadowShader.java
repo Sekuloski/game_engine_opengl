@@ -6,8 +6,8 @@ import Shaders.ShaderProgram;
 
 public class ShadowShader extends ShaderProgram {
 	
-	private static final String VERTEX_FILE = "src/shadows/shadowVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "src/shadows/shadowFragmentShader.glsl";
+	private static final String VERTEX_FILE = "shadows/shadowVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "shadows/shadowFragmentShader.glsl";
 	
 	private int location_mvpMatrix;
 
