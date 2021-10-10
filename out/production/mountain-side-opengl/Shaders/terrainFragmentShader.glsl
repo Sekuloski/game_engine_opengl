@@ -21,6 +21,7 @@ uniform float shineDamper;
 uniform vec3 attenuation[8];
 uniform float reflectivity;
 uniform vec3 skyColor;
+uniform float fogOn;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
@@ -84,5 +85,8 @@ void main(void)
     totalDiffuse = max(totalDiffuse * lightFactor, 0.1);
 
     outColor = vec4(totalDiffuse, 1.0) * totalColor + vec4(totalSpecular, 1.0);
-    //outColor = mix(vec4(skyColor, 1.0), outColor, visibility);
+    if(fogOn > 0.5)
+    {
+        outColor = mix(vec4(skyColor, 1.0), outColor, visibility);
+    }
 }

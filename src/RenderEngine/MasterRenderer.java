@@ -27,7 +27,7 @@ public class MasterRenderer
 
     public static final float FOV = 70;
     public static final float NEAR_PLANE = 0.1f;
-    public static final float FAR_PLANE = 10000;
+    public static float FAR_PLANE = 10000;
 
     public static float RED = 0.5444f;
     public static float GREEN = 0.62f;
@@ -127,6 +127,7 @@ public class MasterRenderer
         terrainShader.start();
         terrainShader.loadClipPlane(clipPlane1, clipPlane2);
         terrainShader.loadSkyColor(RED, GREEN, BLUE);
+        terrainShader.loadFogBoolean(fogOn);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
         terrainRenderer.render(terrains, shadowMapMasterRenderer.getToShadowMapSpaceMatrix());
@@ -187,7 +188,7 @@ public class MasterRenderer
         return projectionMatrix;
     }
 
-    private void createProjectionMatrix()
+    public void createProjectionMatrix()
     {
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));

@@ -8,7 +8,7 @@ public class DisplayManager {
 
     private static final int WIDTH = 1280;
     private static final int HEIGHT = 720;
-    private static final int FPS = 144;
+    private static final int FPS = 60;
 
     private static long lastFrame;
     private static float delta;

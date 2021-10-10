@@ -19,7 +19,7 @@ import static Engine_Tester.MainLoop.*;
 public class SkyboxRenderer
 {
 
-    private static final float SIZE = 4096f;
+    public static float SIZE = 4096f;
 
     private static final float RED = 0.5444f;
     private static final float GREEN = 0.62f;
@@ -77,7 +77,7 @@ public class SkyboxRenderer
     private final int texture;
     private final int nightTexture;
     private final SkyboxShader shader;
-    private float time = 0;
+    private float time = 5040;
     private final Light light;
     private Sun sun;
 
@@ -116,7 +116,7 @@ public class SkyboxRenderer
 
     private void bindTextures()
     {
-        time += DisplayManager.getDelta();
+        time += DisplayManager.getDelta() * 100;
         time %= 23760;
         float angle;
         int texture1;

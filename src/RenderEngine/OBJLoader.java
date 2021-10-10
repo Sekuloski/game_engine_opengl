@@ -9,19 +9,17 @@ import java.util.List;
 
 public class OBJLoader
 {
-	
-	private static final String OBJ_LOC = "obj/";
 
 	public static ModelData loadOBJ(String objFileName)
 	{
 		FileReader isr = null;
-		File objFile = new File(OBJ_LOC + objFileName + ".obj");
 		try
 		{
-			isr = new FileReader(objFile);
-		} catch (FileNotFoundException e)
+			isr = new FileReader(new File("obj/" + objFileName + ".obj"));
+		}
+		catch (FileNotFoundException e)
 		{
-			System.err.println("File not found in res; don't use any extention");
+			e.printStackTrace();
 		}
 		assert isr != null;
 		BufferedReader reader = new BufferedReader(isr);

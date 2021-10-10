@@ -33,7 +33,10 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainLoop
 {
@@ -43,6 +46,8 @@ public class MainLoop
     private static boolean escPressed = false;
     private static boolean FPressed = false;
     private static boolean IPressed = false;
+    private static boolean UPPressed = false;
+    private static boolean DOWNPressed = false;
     private static boolean created = false;
     private static boolean fullscreen = false;
     public static boolean dev = true;
@@ -63,10 +68,13 @@ public class MainLoop
     public static final int sunX = 300000;
     public static final int sunY = 200000;
     public static final int sunZ = 200000;
+    public static MasterRenderer renderer;
 
-    static String entityModel = "lamp_01";
+    static String entityModel = "boat";
     static Entity entity = null;
     static boolean change = false;
+    static int offset = 0;
+    static float scale = 10;
 
     public static void main(String[] args)
     {
@@ -74,10 +82,9 @@ public class MainLoop
         DisplayManager.createDisplay();
         Loader loader = new Loader();
         setParticlePositions();
+        loadModels(loader);
 
         TexturedModel person = getModel("player", "player", loader, "person");
-
-        loadModels(loader);
 
         TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grass"));
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("soil"));
@@ -90,11 +97,9 @@ public class MainLoop
         Camera camera = new Camera(player);
         Light sunLight = new Light(new Vector3f(sunX, sunY, sunZ), new Vector3f(0, 0, 0));
         lights.add(sunLight);
-        MasterRenderer renderer = new MasterRenderer(loader, sunLight, camera);
+        renderer = new MasterRenderer(loader, sunLight, camera);
         Sun sun = new Sun(loader, new Vector3f(3072, sunY / 65f, sunZ / 65f), 0, 1000, renderer.getProjectionMatrix());
         renderer.setSun(sun);
-
-        //new Lamp(entities, lights, loader, terrain, 1426, 450);
 
         new GuiTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
         GuiTexture gui = new GuiTexture(loader.loadTexture("health"), new Vector2f(-0.75f, -0.75f), new Vector2f(0.15f, 0.25f));
@@ -121,7 +126,7 @@ public class MainLoop
 
         try
         {
-            loadEntities(terrain);
+            loadEntities();
             loadLights();
         } catch (FileNotFoundException e)
         {
@@ -131,8 +136,6 @@ public class MainLoop
         List<Entity> entitiesWithoutPlayer = new ArrayList<>(List.copyOf(entities));
         List<Entity> normalEntitiesWithoutPlayer = new ArrayList<>(List.copyOf(normalEntities));
         entities.add(player);
-
-        Light light = null;
 
         DisplayManager.changeFullscreen(true);
 
@@ -148,67 +151,56 @@ public class MainLoop
             }
 
             picker.update();
-            Vector3f terrainPoint = picker.getCurrentTerrainPoint();
-            if(terrainPoint != null)
-            {
-                if(!created && Mouse.isButtonDown(1))
-                {
-                    //entity = new Entity(models.get(entityModel), terrainPoint, 0, 90, 0, 7, 1); // CHANGE THIS
-                    //entities.add(entity);                                                                               // CHANGE THIS
-                    //entitiesWithoutPlayer.add(entity);                                                                  // CHANGE THIS
-                    light = new Light(new Vector3f(terrainPoint.x, terrain.getHeightOfTerrain(terrainPoint.x, terrainPoint.z) + 10, terrainPoint.z)
-                            ,new Vector3f(1, 1, 1), new Vector3f(1, 0.001f, 0.0002f));
-                    lights.add(light);
-                    created = true;
-                }
-                else if(created)
-                {
-                    if(change)
-                    {
-                        entities.remove(entity);
-                        entitiesWithoutPlayer.remove(entity);                                                                  // CHANGE THIS
-                        entity = new Entity(models.get(entityModel), terrainPoint, 0, 90, 0, 1, 1); // CHANGE THIS
-                        entities.add(entity);                                                                               // CHANGE THIS
-                        entitiesWithoutPlayer.add(entity);
-                        change = false;
-                    }
-                    assert entity != null;
-                    assert light != null;
-                    //entity.setPosition(terrainPoint);
-                    //entity.setRy(player.getRy() + 90);
-                    //entity.setScale(entity.getScale() + Mouse.getDWheel() * 0.01f);
-                    light.setPosition(new Vector3f(terrainPoint.x, terrainPoint.y + Mouse.getDWheel() * 0.01f + 10, terrainPoint.z));
-                    if(Mouse.isButtonDown(0))
-                    {
-                        //String entityString = entityModel + "," + entity.getPosition().x + "," + entity.getPosition().y + ","                         // CHANGE THIS
-                        //        + entity.getPosition().z + "," + entity.getRy() + "," + entity.getScale() + "," + entity.getCollisionScale() + ",F"; // CHANGE THIS
-                        String lightString = light.getPosition().x + "," + light.getPosition().y + ","                         // CHANGE THIS
-                                + light.getPosition().z + "," + light.getColor().x + "," + light.getColor().y + "," +
-                                light.getColor().z + "," + light.getAttenuation().x + "," + light.getAttenuation().y + ","
-                                + light.getAttenuation().z;
-                        try
-                        {
+//            Vector3f terrainPoint = picker.getCurrentTerrainPoint();
+//            if(terrainPoint != null)
+//            {
+//                if(!created && Mouse.isButtonDown(1))
+//                {
+//
+//                    entity = new Entity(models.get(entityModel), new Vector3f(terrainPoint.x, terrainPoint.y + offset, terrainPoint.z), 0, 180, 0, scale, 1);
+//                    entities.add(entity);
+//                    entitiesWithoutPlayer.add(entity);
+//                    created = true;
+//                }
+//                else if(created)
+//                {
+//                    if(change)
+//                    {
+//                        entities.remove(entity);
+//                        entitiesWithoutPlayer.remove(entity);
+//                        entity = new Entity(models.get(entityModel), new Vector3f(terrainPoint.x, terrainPoint.y + offset, terrainPoint.z), 0, 180, 0, scale, 1);
+//                        entities.add(entity);
+//                        entitiesWithoutPlayer.add(entity);
+//                        change = false;
+//                    }
+//                    assert entity != null;
+//                    entity.setPosition(new Vector3f(terrainPoint.x, terrain.getHeightOfTerrain(terrainPoint.x,
+//                                terrainPoint.z) + offset, terrainPoint.z));
+//                    entity.setScale(entity.getScale() + Mouse.getDWheel() * 0.01f);
+//                    entity.setRy(player.getRy() + 180);
+//                    scale = entity.getScale();
+//                    if(Mouse.isButtonDown(0))
+//                    {
+//                        String entityString = entityModel + "," + entity.getPosition().x + "," + entity.getPosition().y + ","
+//                                + entity.getPosition().z + "," + entity.getRy() + "," + entity.getScale() + "," + entity.getCollisionScale() + ",F";
+//
+//                        try
+//                        {
 //                            FileWriter fileWriter = new FileWriter(ENTITY_SOURCE, true);
 //                            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 //                            bufferedWriter.newLine();
 //                            bufferedWriter.write(entityString);
 //                            bufferedWriter.close();
-
-                            FileWriter fileWriter = new FileWriter(LIGHTS_SOURCE, true);
-                            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                            bufferedWriter.newLine();
-                            bufferedWriter.write(lightString);
-                            bufferedWriter.close();
-
-                        } catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
-                        created = false;
-                    }
-                }
-
-            }
+//
+//                        } catch (IOException e)
+//                        {
+//                            e.printStackTrace();
+//                        }
+//                        created = false;
+//                    }
+//                }
+//
+//            }
 
             ParticleMaster.update(camera);
 
@@ -260,22 +252,25 @@ public class MainLoop
 
     private static void setParticlePositions()
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(PARTICLE_SOURCE)))
+        try
         {
-            String line;
-            while ((line = br.readLine()) != null)
+            try (BufferedReader br = new BufferedReader(new FileReader(PARTICLE_SOURCE)))
             {
-                String[] parts = line.split(",");
-                if(parts[0].equals("fire"))
+                String line;
+                while ((line = br.readLine()) != null)
                 {
-                    firePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+                    String[] parts = line.split(",");
+                    if(parts[0].equals("fire"))
+                    {
+                        firePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+                    }
+                    else
+                    {
+                        smokePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+                    }
                 }
-                else
-                {
-                    smokePosition = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                }
-            }
 
+            }
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -347,54 +342,80 @@ public class MainLoop
                 IPressed = false;
             }
 
+            if(Keyboard.isKeyDown(Keyboard.KEY_UP))
+            {
+                if(!UPPressed)
+                {
+                    offset += 1;
+                    UPPressed = true;
+                }
+            }
+            else
+            {
+                UPPressed = false;
+            }
+
+            if(Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+            {
+                if(!DOWNPressed)
+                {
+                    offset -= 1;
+                    DOWNPressed = true;
+                }
+            }
+            else
+            {
+                DOWNPressed = false;
+            }
+
             if(Keyboard.isKeyDown(Keyboard.KEY_1))
             {
-                entityModel = "fense_01";
+                entityModel = "tree_01";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_2))
             {
-                entityModel = "fense_02";
+                entityModel = "tree_02";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_3))
             {
-                entityModel = "fense_03";
+                entityModel = "tree_03";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_4))
             {
-                entityModel = "fense_stone_01";
+                entityModel = "tree_04";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_5))
             {
-                entityModel = "fense_stone_02";
+                entityModel = "tree_05";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_6))
             {
-                entityModel = "gate_01";
+                entityModel = "tree_06";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_7))
             {
-                entityModel = "gate_02";
+                entityModel = "tree_07";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_8))
             {
-                entityModel = "wheat1";
+                entityModel = "tree_08";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_9))
             {
-                entityModel = "wheat2";
+                entityModel = "tree_09";
                 change = true;
             }
             if(Keyboard.isKeyDown(Keyboard.KEY_0))
             {
-                entityModel = "sunflower_broken";
+                entityModel = "tree_10";
                 change = true;
             }
         }
@@ -405,38 +426,38 @@ public class MainLoop
 
     }
 
-    private static void loadEntities(Terrain terrain) throws FileNotFoundException
+    private static void loadEntities() throws FileNotFoundException
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(ENTITY_SOURCE))) {
-            String line;
-            while ((line = br.readLine()) != null)
+        try
+        {
+            try (BufferedReader br = new BufferedReader(new FileReader(ENTITY_SOURCE)))
             {
-                String[] parts = line.split(",");
-                float posX = Float.parseFloat(parts[1]);
-                float posZ = Float.parseFloat(parts[3]);
-                float rY = Float.parseFloat(parts[4]);
-                float scale = Float.parseFloat(parts[5]);
-                float collisionScale = Float.parseFloat(parts[6]);
-                if(parts[7].equals("N"))
+                String line;
+                while ((line = br.readLine()) != null)
                 {
-                    if(parts[0].equals("wall") || parts[0].equals("bridge"))
+                    String[] parts = line.split(",");
+                    float posX = Float.parseFloat(parts[1]);
+                    float posY = Float.parseFloat(parts[2]);
+                    float posZ = Float.parseFloat(parts[3]);
+                    if(posX > 2113 || posX < -64 || posZ > 2113 || posZ < -64)
                     {
-                        Vector3f position = new Vector3f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                        Entity entity = new Entity(normalModels.get(parts[0]), position, 0, rY, 0, scale, collisionScale);
-                        normalEntities.add(entity);
+                        continue;
+                    }
+                    float rY = Float.parseFloat(parts[4]);
+                    float scale = Float.parseFloat(parts[5]);
+                    float collisionScale = Float.parseFloat(parts[6]);
+                    if(parts[7].equals("N"))
+                    {
+                            Vector3f position = new Vector3f(posX, posY, posZ);
+                            Entity entity = new Entity(normalModels.get(parts[0]), position, 0, rY, 0, scale, collisionScale);
+                            normalEntities.add(entity);
                     }
                     else
                     {
-                        Vector3f position = new Vector3f(posX, terrain.getHeightOfTerrain(posX, posZ), posZ);
-                        Entity entity = new Entity(normalModels.get(parts[0]), position, 0, rY, 0, scale, collisionScale);
-                        normalEntities.add(entity);
+                        Vector3f position = new Vector3f(posX, posY, posZ);
+                        Entity entity = new Entity(models.get(parts[0]), position, 0, rY, 0, scale, collisionScale);
+                        entities.add(entity);
                     }
-                }
-                else
-                {
-                    Vector3f position = new Vector3f(posX, terrain.getHeightOfTerrain(posX, posZ), posZ);
-                    Entity entity = new Entity(models.get(parts[0]), position, 0, rY, 0, scale, collisionScale);
-                    entities.add(entity);
                 }
             }
         } catch (IOException e)
@@ -447,33 +468,36 @@ public class MainLoop
 
     private static void loadModels(Loader loader)
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(MODELS_SOURCE)))
+        try
         {
-            String line;
-            while ((line = br.readLine()) != null)
+            try (BufferedReader br = new BufferedReader(new FileReader(MODELS_SOURCE)))
             {
-                String[] parts = line.split(",");
-                String isNormal = parts[0];
-                if(isNormal.equals("N"))
+                String line;
+                while ((line = br.readLine()) != null)
                 {
-                    if(parts[5].equals("NULL"))
+                    String[] parts = line.split(",");
+                    String isNormal = parts[0];
+                    if(isNormal.equals("N"))
                     {
-                        normalModels.put(parts[1], getNormalModel(parts[2], parts[3], parts[4], loader, parts[6]));
+                        if(parts[5].equals("NULL"))
+                        {
+                            normalModels.put(parts[1], getNormalModel(parts[2], parts[3], parts[4], loader, parts[5]));
+                        }
+                        else
+                        {
+                            normalModels.put(parts[1], getNormalModel(parts[2], parts[3], parts[4], parts[5], loader, parts[6]));
+                        }
                     }
                     else
                     {
-                        normalModels.put(parts[1], getNormalModel(parts[2], parts[3], parts[4], parts[5], loader, parts[6]));
-                    }
-                }
-                else
-                {
-                    if(parts[5].equals("TRUE"))
-                    {
-                        models.put(parts[1], getModelWithFake(parts[2], parts[3], loader, parts[4]));
-                    }
-                    else
-                    {
-                        models.put(parts[1], getModel(parts[2], parts[3], loader, parts[4]));
+                        if(parts[5].equals("TRUE"))
+                        {
+                            models.put(parts[1], getModelWithFake(parts[2], parts[3], loader, parts[4]));
+                        }
+                        else
+                        {
+                            models.put(parts[1], getModel(parts[2], parts[3], loader, parts[4]));
+                        }
                     }
                 }
             }
@@ -485,16 +509,19 @@ public class MainLoop
 
     private static void loadLights()
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(LIGHTS_SOURCE)))
+        try
         {
-            String line;
-            while ((line = br.readLine()) != null)
+            try (BufferedReader br = new BufferedReader(new FileReader(LIGHTS_SOURCE)))
             {
-                String[] parts = line.split(",");
-                Vector3f position = new Vector3f(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
-                Vector3f color = new Vector3f(Float.parseFloat(parts[3]), Float.parseFloat(parts[4]), Float.parseFloat(parts[5]));
-                Vector3f attenuation = new Vector3f(Float.parseFloat(parts[6]), Float.parseFloat(parts[7]), Float.parseFloat(parts[8]));
-                lights.add(new Light(position, color, attenuation));
+                String line;
+                while ((line = br.readLine()) != null)
+                {
+                    String[] parts = line.split(",");
+                    Vector3f position = new Vector3f(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
+                    Vector3f color = new Vector3f(Float.parseFloat(parts[3]), Float.parseFloat(parts[4]), Float.parseFloat(parts[5]));
+                    Vector3f attenuation = new Vector3f(Float.parseFloat(parts[6]), Float.parseFloat(parts[7]), Float.parseFloat(parts[8]));
+                    lights.add(new Light(position, color, attenuation));
+                }
             }
         } catch (IOException e)
         {

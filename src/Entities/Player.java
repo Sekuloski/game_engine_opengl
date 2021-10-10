@@ -95,7 +95,7 @@ public class Player extends Entity
     }
 
 
-
+    // NOT DONE - DOESN'T WORK
     public void checkCollisions(List<Entity> entities)
     {
         for(Entity entity : entities)

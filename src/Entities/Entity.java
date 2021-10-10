@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class Entity
 {
 
-    private TexturedModel model;
+    private final TexturedModel model;
     private Vector3f position;
     private float rx, ry, rz;
     private float scale;
@@ -57,11 +57,6 @@ public class Entity
     public TexturedModel getModel()
     {
         return model;
-    }
-
-    public void setModel(TexturedModel model)
-    {
-        this.model = model;
     }
 
     public Vector3f getPosition()

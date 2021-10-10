@@ -15,7 +15,7 @@ public class GuiRenderer
 {
 
     private final RawModel quad;
-    private GuiShader shader;
+    private final GuiShader shader;
 
     public GuiRenderer(Loader loader)
     {
