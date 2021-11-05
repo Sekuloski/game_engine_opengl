@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Camera
 {
-    private static final float RUN_SPEED = 100;
+    private static float RUN_SPEED = 100;
 
     private float currentSpeed = 0;
     private float currentTurnSpeed = 0;
@@ -17,12 +17,10 @@ public class Camera
     private final Vector3f position = new Vector3f(100, 35, 50);
     private float pitch = 10;
     private float yaw = 0;
-    private float roll;
-    private float distanceFromPlayer = 0;
+    private final float distanceFromPlayer = 0;
 
     private float lastPitch = pitch;
     private float lastYaw = yaw;
-    private float lastRoll = roll;
 
     //private float angleAroundPlayer = 0;
 
@@ -32,7 +30,7 @@ public class Camera
     private boolean flying = false;
     private boolean falling = false;
 
-    private Player player;
+    private final Player player;
 
     public Camera(Player player)
     {
@@ -43,7 +41,7 @@ public class Camera
     {
        // calculateAngle();
         checkInputs();
-        if(!Player.escPressed)
+        //if(!Player.escPressed)
         {
             if(detached)
             {
@@ -51,10 +49,9 @@ public class Camera
                 {
                     lastPitch = pitch;
                     lastYaw = yaw;
-                    lastRoll = roll;
                     flag2 = false;
                 }
-                changeRotation(0, MainLoop.DX,-Mouse.getDY() * 0.1f);
+                changeRotation(MainLoop.DX,-Mouse.getDY() * 0.1f);
 
                 float distance = currentSpeed * DisplayManager.getDelta();
                 float dx = (float) (distance * Math.sin(Math.toRadians(player.getRy())));
@@ -75,7 +72,6 @@ public class Camera
                 {
                     pitch = lastPitch;
                     yaw = lastYaw;
-                    roll = lastRoll;
                     flag2 = true;
                 }
 
@@ -96,9 +92,8 @@ public class Camera
         this.position.z += dz;
     }
 
-    public void changeRotation(float dx, float dy, float dz)
+    public void changeRotation(float dy, float dz)
     {
-        this.roll += dx;
         this.yaw += dy;
         this.pitch += dz;
     }
@@ -127,6 +122,15 @@ public class Camera
             this.currentTurnSpeed = 0;
         }
 
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        {
+            RUN_SPEED = 400;
+        }
+        else
+        {
+            RUN_SPEED = 100;
+        }
+
         if (!falling && Keyboard.isKeyDown(Keyboard.KEY_SPACE))
         {
             flying = true;
@@ -138,7 +142,7 @@ public class Camera
             this.currentFlySpeed = 0;
         }
 
-        if (!flying && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        if (!flying && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
             falling = true;
             this.currentFlySpeed = -RUN_SPEED;
@@ -149,30 +153,33 @@ public class Camera
             this.currentFlySpeed = 0;
         }
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_O))
+        if(MainLoop.dev)
         {
-            if(flag)
+            if(Keyboard.isKeyDown(Keyboard.KEY_O))
             {
-                detached = !detached;
+                if(flag)
+                {
+                    detached = !detached;
+                }
+                flag = false;
             }
-            flag = false;
-        }
-        else
-        {
-            flag = true;
+            else
+            {
+                flag = true;
+            }
         }
 
     }
 
     private void calculatePosition(float horizontal, float vertical)
     {
-        float theta = player.getRy()/* +  angleAroundPlayer */;
+        float theta = player.getRy();
         float offsetX = horizontal * (float) Math.sin(Math.toRadians(theta));
         float offsetZ = horizontal * (float) Math.cos(Math.toRadians(theta));
         position.x = player.getPosition().x - offsetX;
         position.z = player.getPosition().z - offsetZ;
         position.y = player.getPosition().y + vertical + 10;
-        this.yaw = 180 - (player.getRy()/* +  angleAroundPlayer */);
+        this.yaw = 180 - (player.getRy());
     }
 
     private float calculateHorDistance()
@@ -183,12 +190,6 @@ public class Camera
     private float calculateVerDistance()
     {
         return distanceFromPlayer * (float) Math.sin(Math.toRadians(pitch));
-    }
-
-    private void calculateZoom()
-    {
-        float zoomLevel = Mouse.getDWheel() * 0.1f;
-        distanceFromPlayer -= zoomLevel;
     }
 
     private void calculatePitch()
@@ -223,23 +224,9 @@ public class Camera
         return yaw;
     }
 
-    public float getRoll()
-    {
-        return roll;
-    }
-
     public void inverPitch()
     {
         this.pitch = -this.pitch;
     }
-
-//    private void calculateAngle()
-//    {
-//        if(Mouse.isButtonDown(0))
-//        {
-//            float angleChange = Mouse.getDX() * 0.3f;
-//            angleAroundPlayer -= angleChange;
-//        }
-//    }
 
 }

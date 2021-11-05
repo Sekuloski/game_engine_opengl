@@ -13,7 +13,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.List;
 
-public class WaterRenderer {
+public class WaterRenderer
+{
 
 	private RawModel quad;
 	private final WaterShader shader;
@@ -43,7 +44,8 @@ public class WaterRenderer {
 	public void render(List<WaterTile> water, Camera camera, List<Light> lights)
 	{
 		prepareRender(camera, lights);
-		for (WaterTile tile : water) {
+		for (WaterTile tile : water)
+		{
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
 					WaterTile.TILE_SIZE);
@@ -80,15 +82,16 @@ public class WaterRenderer {
 
 	}
 	
-	private void unbind(){
+	private void unbind()
+	{
 		GL11.glDisable(GL11.GL_BLEND);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 		shader.stop();
 	}
 
-	private void setUpVAO(Loader loader) {
-		// Just x and z vectex positions here, y is set to 0 in v.shader
+	private void setUpVAO(Loader loader)
+	{
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 };
 		quad = loader.loadToVAO(vertices, 2);
 	}

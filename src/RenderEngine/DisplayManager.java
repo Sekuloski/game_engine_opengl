@@ -8,19 +8,17 @@ public class DisplayManager {
 
     private static final int WIDTH = 1280;
     private static final int HEIGHT = 720;
-    private static final int FPS = 144;
+    private static final int FPS = 60;
 
     private static long lastFrame;
     private static float delta;
 
     public static void createDisplay()
     {
-
         ContextAttribs attribs = new ContextAttribs(3, 3).withForwardCompatible(true).withProfileCore(true);
 
         try
         {
-
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
             Display.create(new PixelFormat().withSamples(8), attribs);
             Display.setTitle("OpenGL PROJECT");
@@ -51,11 +49,39 @@ public class DisplayManager {
         lastFrame = currentTime;
     }
 
+
     public static float getDelta()
     {
         return delta;
     }
 
+    public static void changeFullscreen(boolean fullscreen)
+    {
+        if (fullscreen)
+        {
+            System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
+            try
+            {
+                Display.setDisplayMode(Display.getDesktopDisplayMode());
+                Display.setLocation(0, 0);
+                Display.setFullscreen(false);
+            } catch (LWJGLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
+            try
+            {
+                Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
+            } catch (LWJGLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void closeDisplay()
     {

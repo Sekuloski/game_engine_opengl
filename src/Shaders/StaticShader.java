@@ -4,7 +4,6 @@ import Entities.Camera;
 import Entities.Light;
 import ToolBox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -15,8 +14,8 @@ public class StaticShader extends ShaderProgram
 
     private static final int MAX_LIGHTS = 8;
 
-    private static final String VERTEX_FILE = "src/Shaders/vertexShader.txt";
-    private static final String FRAGMENT_FILE = "src/Shaders/fragmentShader.txt";
+    private static final String VERTEX_FILE = "src/Shaders/vertexShader.glsl";
+    private static final String FRAGMENT_FILE = "src/Shaders/fragmentShader.glsl";
 
     private int tM_location;
     private int pM_location;
@@ -28,13 +27,12 @@ public class StaticShader extends ShaderProgram
     private int refl_location;
     private int fakeLighting_location;
     private int skyColor_location;
-    private int numberOfRows_location;
-    private int offset_location;
     private int plane1_location;
     private int plane2_location;
     private int specularMap_location;
     private int usesSpecular_location;
     private int textureSampler_location;
+    private int fogOn_location;
 
     public StaticShader()
     {
@@ -59,13 +57,12 @@ public class StaticShader extends ShaderProgram
         refl_location = super.getUniformLocation("reflectivity");
         fakeLighting_location = super.getUniformLocation("useFakeLighting");
         skyColor_location = super.getUniformLocation("skyColor");
-        numberOfRows_location = super.getUniformLocation("numberOfRows");
-        offset_location = super.getUniformLocation("offset");
         plane1_location = super.getUniformLocation("plane1");
         plane2_location = super.getUniformLocation("plane2");
         specularMap_location = super.getUniformLocation("specularMap");
         usesSpecular_location = super.getUniformLocation("usesSpecularMap");
         textureSampler_location = super.getUniformLocation("textureSampler");
+        fogOn_location = super.getUniformLocation("fogOn");
 
         lightColor_location = new int[MAX_LIGHTS];
         lightPosition_location = new int[MAX_LIGHTS];
@@ -91,19 +88,14 @@ public class StaticShader extends ShaderProgram
         super.loadInt(specularMap_location, 1);
     }
 
+    public void loadFogBoolean(boolean fogOn)
+    {
+        super.loadBoolean(fogOn_location, fogOn);
+    }
+
     public void loadUseSpecularMap(boolean useMap)
     {
         super.loadBoolean(usesSpecular_location, useMap);
-    }
-
-    public void loadNumberOfRows(int numberOfRows)
-    {
-        super.loadFloat(numberOfRows_location, numberOfRows);
-    }
-
-    public void loadOffset(float x, float y)
-    {
-        super.load2DVector(offset_location, new Vector2f(x, y));
     }
 
     public void loadSkyColor(float r, float g, float b)

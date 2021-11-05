@@ -11,11 +11,11 @@ import java.util.List;
 
 public class NormalMappedObjLoader {
 
-	private static final String RES_LOC = "obj/";
+	private static final String OBJ_LOC = "obj/";
 
 	public static RawModel loadOBJ(String objFileName, Loader loader) {
 		FileReader isr = null;
-		File objFile = new File(RES_LOC + objFileName + ".obj");
+		File objFile = new File(OBJ_LOC + objFileName + ".obj");
 		try {
 			isr = new FileReader(objFile);
 		} catch (FileNotFoundException e) {

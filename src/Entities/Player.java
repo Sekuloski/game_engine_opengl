@@ -50,7 +50,7 @@ public class Player extends Entity
                 flag = true;
             }
             checkInputs();
-            if(!escPressed)
+            //if(!escPressed)
             {
                 super.changeRotation(0, -MainLoop.DX, 0);
             }
@@ -86,7 +86,7 @@ public class Player extends Entity
                 lastRZ = getRz();
                 flag = false;
             }
-            if(!escPressed)
+            //if(!escPressed)
             {
                 super.changeRotation(0, -MainLoop.DX, 0);
             }
@@ -95,7 +95,7 @@ public class Player extends Entity
     }
 
 
-
+    // NOT DONE - DOESN'T WORK
     public void checkCollisions(List<Entity> entities)
     {
         for(Entity entity : entities)
@@ -208,10 +208,7 @@ public class Player extends Entity
         {
             RUN_SPEED = 50;
         }
-//        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-//        {
-//            //position.y -= 0.2;
-//        }
+
     }
 
 }

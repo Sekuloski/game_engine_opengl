@@ -3,8 +3,10 @@ package Sun;
 import Entities.Camera;
 import Models.RawModel;
 import RenderEngine.Loader;
+import Textures.ModelTexture;
 import ToolBox.Maths;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
@@ -14,19 +16,22 @@ public class Sun
 {
 
     private static final float[] VERTICES = {-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f};
+    private static final float[] TEXTURES = {0, 0, 0, 1, 1, 1, 1, 0};
 
     private final RawModel quad;
     private final SunShader shader;
     private Vector3f position;
     private final float rotation;
     private final float scale;
+    private final ModelTexture texture;
 
     public Sun(Loader loader, Vector3f position, float rotation, float scale, Matrix4f projectionMatrix)
     {
+        texture = new ModelTexture(loader.loadTexture("sun"));
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
-        quad = loader.loadToVAO(VERTICES, 2);
+        quad = loader.loadToVAO(VERTICES, 2, TEXTURES);
         shader = new SunShader();
         shader.start();
         shader.loadProjectionMatrix(projectionMatrix);
@@ -68,6 +73,9 @@ public class Sun
         shader.start();
         GL30.glBindVertexArray(quad.getVaoID());
         GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -76,11 +84,12 @@ public class Sun
     {
         GL11.glDisable(GL11.GL_BLEND);
         GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
         shader.stop();
     }
 
-    private void cleanUp()
+    public void cleanUp()
     {
         shader.cleanUp();
     }

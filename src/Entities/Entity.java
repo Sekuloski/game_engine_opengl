@@ -6,13 +6,11 @@ import org.lwjgl.util.vector.Vector3f;
 public class Entity
 {
 
-    private TexturedModel model;
+    private final TexturedModel model;
     private Vector3f position;
     private float rx, ry, rz;
     private float scale;
-    private float collisionScale;
-
-    private int textureIndex = 0;
+    private final float collisionScale;
 
     public Entity(TexturedModel model, Vector3f position, float rx, float ry, float rz, float scale, float collisionScale)
     {
@@ -25,34 +23,28 @@ public class Entity
         this.collisionScale = collisionScale;
     }
 
-    public Entity(TexturedModel model, int index, Vector3f position, float rx, float ry, float rz, float scale)
-    {
-        this.textureIndex = index;
-        this.model = model;
-        this.position = position;
-        this.rx = rx;
-        this.ry = ry;
-        this.rz = rz;
-        this.scale = scale;
-    }
-
-    public float getXOffset()
-    {
-        int column = textureIndex % model.getTexture().getNumberOfRows();
-        return (float) column / (float) model.getTexture().getNumberOfRows();
-    }
-
-    public float getYOffset()
-    {
-        int row = textureIndex / model.getTexture().getNumberOfRows();
-        return (float) row / (float) model.getTexture().getNumberOfRows();
-    }
-
     public void changePosition(float dx, float dy, float dz)
     {
         this.position.x += dx;
         this.position.y += dy;
         this.position.z += dz;
+        if(this.position.x < 2)
+        {
+            this.position.x = 2;
+        }
+        if(this.position.z < 2)
+        {
+            this.position.z = 2;
+        }
+        if(this.position.x > 2046)
+        {
+            this.position.x = 2046;
+        }
+        if(this.position.z > 2046)
+        {
+            this.position.z = 2046;
+        }
+
     }
 
     public void changeRotation(float dx, float dy, float dz)
@@ -65,11 +57,6 @@ public class Entity
     public TexturedModel getModel()
     {
         return model;
-    }
-
-    public void setModel(TexturedModel model)
-    {
-        this.model = model;
     }
 
     public Vector3f getPosition()

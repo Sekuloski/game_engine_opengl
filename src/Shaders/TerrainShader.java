@@ -12,8 +12,8 @@ import java.util.List;
 public class TerrainShader extends ShaderProgram
 {
 
-    private static final String VERTEX_FILE = "src/Shaders/terrainVertexShader.txt";
-    private static final String FRAGMENT_FILE = "src/Shaders/terrainFragmentShader.txt";
+    private static final String VERTEX_FILE = "src/Shaders/terrainVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "src/Shaders/terrainFragmentShader.glsl";
 
     private static final int MAX_LIGHTS = 8;
 
@@ -35,7 +35,7 @@ public class TerrainShader extends ShaderProgram
     private int plane2_location;
     private int shadowMap_location;
     private int toShadowMap_location;
-
+    private int fogOn_location;
 
     public TerrainShader()
     {
@@ -68,6 +68,7 @@ public class TerrainShader extends ShaderProgram
         plane2_location = super.getUniformLocation("plane2");
         toShadowMap_location = super.getUniformLocation("toShadowMapSpace");
         shadowMap_location = super.getUniformLocation("shadowMap");
+        fogOn_location = super.getUniformLocation("fogOn");
 
         lightColor_location = new int[MAX_LIGHTS];
         lightPosition_location = new int[MAX_LIGHTS];
@@ -79,6 +80,11 @@ public class TerrainShader extends ShaderProgram
             lightPosition_location[i] = super.getUniformLocation("lightPosition[" + i + "]");
             attenuation_location[i] = super.getUniformLocation("attenuation[" + i + "]");
         }
+    }
+
+    public void loadFogBoolean(boolean fogOn)
+    {
+        super.loadBoolean(fogOn_location, fogOn);
     }
 
     public void loadToShadowMapSpaceMatrix(Matrix4f matrix)

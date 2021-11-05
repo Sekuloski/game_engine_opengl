@@ -9,6 +9,7 @@ import Shaders.StaticShader;
 import Shaders.TerrainShader;
 import Shadows.ShadowMapMasterRenderer;
 import Skybox.SkyboxRenderer;
+import Sun.Sun;
 import Terrains.Terrain;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -26,11 +27,13 @@ public class MasterRenderer
 
     public static final float FOV = 70;
     public static final float NEAR_PLANE = 0.1f;
-    public static final float FAR_PLANE = 1000;
+    public static float FAR_PLANE = 10000;
 
-    public static float RED = 0;
-    public static float GREEN = 0;
-    public static float BLUE = 0;
+    public static float RED = 0.5444f;
+    public static float GREEN = 0.62f;
+    public static float BLUE = 0.69f;
+
+    public static boolean fogOn = false;
 
     private Matrix4f projectionMatrix;
 
@@ -58,6 +61,11 @@ public class MasterRenderer
         this.shadowMapMasterRenderer = new ShadowMapMasterRenderer(camera);
     }
 
+    public void setSun(Sun sun)
+    {
+        skyboxRenderer.setSun(sun);
+    }
+
     public static void enableCulling()
     {
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -65,10 +73,12 @@ public class MasterRenderer
     }
 
     public void renderShadowMap(List<Entity> entityList, List<Entity> normalMappedEntities, Light sun){
-        for(Entity entity : entityList){
+        for(Entity entity : entityList)
+        {
             processEntity(entity);
         }
-        for(Entity entity : normalMappedEntities){
+        for(Entity entity : normalMappedEntities)
+        {
             processEntity(entity);
         }
         shadowMapMasterRenderer.render(normalMapEntities, sun);
@@ -87,16 +97,10 @@ public class MasterRenderer
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain[][] terrains, List<Light> lights, Camera camera,
+    public void renderScene(List<Entity> entities, List<Entity> normalEntities, Terrain terrain, List<Light> lights, Camera camera,
                                                     Vector4f clipPlane1, Vector4f clipPlane2)
     {
-        for (Terrain[] terrainArray : terrains)
-        {
-            for (Terrain terrain : terrainArray)
-            {
-                processTerrain(terrain);
-            }
-        }
+        processTerrain(terrain);
         for(Entity entity : entities)
         {
             processEntity(entity);
@@ -116,12 +120,14 @@ public class MasterRenderer
         shader.loadSkyColor(RED, GREEN, BLUE);
         shader.loadLights(lights);
         shader.loadViewMatrix(camera);
+        shader.loadFogBoolean(fogOn);
         renderer.render(entities);
         shader.stop();
         normalMappingRenderer.render(normalMapEntities, clipPlane1, lights, camera);
         terrainShader.start();
         terrainShader.loadClipPlane(clipPlane1, clipPlane2);
         terrainShader.loadSkyColor(RED, GREEN, BLUE);
+        terrainShader.loadFogBoolean(fogOn);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
         terrainRenderer.render(terrains, shadowMapMasterRenderer.getToShadowMapSpaceMatrix());
@@ -182,7 +188,7 @@ public class MasterRenderer
         return projectionMatrix;
     }
 
-    private void createProjectionMatrix()
+    public void createProjectionMatrix()
     {
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));

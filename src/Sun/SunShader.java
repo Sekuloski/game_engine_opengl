@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Matrix4f;
 public class SunShader extends ShaderProgram
 {
 
-    private static final String VERTEX_FILE = "src/sun/sunVShader.txt";
-    private static final String FRAGMENT_FILE = "src/sun/sunFShader.txt";
+    private static final String VERTEX_FILE = "src/sun/sunVShader.glsl";
+    private static final String FRAGMENT_FILE = "src/sun/sunFShader.glsl";
 
     private int modelViewMatrix_location;
     private int projectionMatrix_location;
@@ -28,6 +28,7 @@ public class SunShader extends ShaderProgram
     protected void bindAttributes()
     {
         super.bindAttribute(0, "position");
+        super.bindAttribute(1, "textureCoords");
     }
 
     protected void loadModelViewMatrix(Matrix4f modelView)

@@ -1,18 +1,16 @@
 package Skybox;
 
-import RenderEngine.DisplayManager;
-import org.lwjgl.util.vector.Matrix4f;
-
 import Entities.Camera;
-
+import RenderEngine.DisplayManager;
 import Shaders.ShaderProgram;
 import ToolBox.Maths;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class SkyboxShader extends ShaderProgram{
 
-    private static final String VERTEX_FILE = "src/Skybox/skyboxVertexShader.txt";
-    private static final String FRAGMENT_FILE = "src/Skybox/skyboxFragmentShader.txt";
+    private static final String VERTEX_FILE = "src/Skybox/skyboxVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "src/Skybox/skyboxFragmentShader.glsl";
 
     private static final float ROTATE_SPEED = 1.0f;
 

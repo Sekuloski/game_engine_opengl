@@ -3,7 +3,6 @@ package NormalMappingRenderer;
 import Entities.Light;
 import Shaders.ShaderProgram;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -12,10 +11,10 @@ import java.util.List;
 public class NormalMappingShader extends ShaderProgram
 {
 	
-	private static final int MAX_LIGHTS = 4;
+	private static final int MAX_LIGHTS = 64;
 	
-	private static final String VERTEX_FILE = "src/NormalMappingRenderer/normalMapVShader.txt";
-	private static final String FRAGMENT_FILE = "src/NormalMappingRenderer/normalMapFShader.txt";
+	private static final String VERTEX_FILE = "src/NormalMappingRenderer/normalMapVShader.glsl";
+	private static final String FRAGMENT_FILE = "src/NormalMappingRenderer/normalMapFShader.glsl";
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
@@ -26,8 +25,6 @@ public class NormalMappingShader extends ShaderProgram
 	private int location_shineDamper;
 	private int location_reflectivity;
 	private int location_skyColour;
-	private int location_numberOfRows;
-	private int location_offset;
 	private int location_plane;
 	private int location_modelTexture;
 	private int normalMap_location;
@@ -52,8 +49,6 @@ public class NormalMappingShader extends ShaderProgram
 		location_shineDamper = super.getUniformLocation("shineDamper");
 		location_reflectivity = super.getUniformLocation("reflectivity");
 		location_skyColour = super.getUniformLocation("skyColour");
-		location_numberOfRows = super.getUniformLocation("numberOfRows");
-		location_offset = super.getUniformLocation("offset");
 		location_plane = super.getUniformLocation("plane");
 		location_modelTexture = super.getUniformLocation("modelTexture");
 		normalMap_location = super.getUniformLocation("normalMap");
@@ -61,7 +56,9 @@ public class NormalMappingShader extends ShaderProgram
 		location_lightPositionEyeSpace = new int[MAX_LIGHTS];
 		location_lightColour = new int[MAX_LIGHTS];
 		location_attenuation = new int[MAX_LIGHTS];
-		for(int i=0;i<MAX_LIGHTS;i++){
+
+		for(int i=0;i<MAX_LIGHTS;i++)
+		{
 			location_lightPositionEyeSpace[i] = super.getUniformLocation("lightPositionEyeSpace[" + i + "]");
 			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
@@ -78,16 +75,6 @@ public class NormalMappingShader extends ShaderProgram
 	protected void loadClipPlane(Vector4f plane)
 	{
 		super.loadVector(location_plane, plane);
-	}
-	
-	protected void loadNumberOfRows(int numberOfRows)
-	{
-		super.loadFloat(location_numberOfRows, numberOfRows);
-	}
-	
-	protected void loadOffset(float x, float y)
-	{
-		super.load2DVector(location_offset, new Vector2f(x,y));
 	}
 	
 	protected void loadSkyColour(float r, float g, float b)

@@ -14,6 +14,11 @@ public class ModelTexture
 
     private boolean hasSpecularMap = false;
 
+    public ModelTexture(int id)
+    {
+        this.textureID = id;
+    }
+
     public int getNormalMap()
     {
         return normalMap;
@@ -23,12 +28,12 @@ public class ModelTexture
     {
         this.normalMap = normalMap;
     }
-
     public void setSpecularMap(int specMap)
     {
         this.specularMap = specMap;
         this.hasSpecularMap = true;
     }
+
     public boolean hasSpecularMap()
     {
         return hasSpecularMap;
@@ -89,11 +94,6 @@ public class ModelTexture
     public void setReflectivity(float reflectivity)
     {
         this.reflectivity = reflectivity;
-    }
-
-    public ModelTexture(int id)
-    {
-        this.textureID = id;
     }
 
     public int getTextureID()
